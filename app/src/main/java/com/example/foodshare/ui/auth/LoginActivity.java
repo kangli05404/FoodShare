@@ -27,6 +27,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText editTextPassword;
     private Button buttonLogin;
     private TextView textViewCreateAccount;
+    private TextView textViewForgotPassword;
     private ProgressBar progressBar;
 
     private FirebaseAuth firebaseAuth;
@@ -46,10 +47,16 @@ public class LoginActivity extends AppCompatActivity {
         buttonLogin = findViewById(R.id.buttonLogin);
         textViewCreateAccount =
                 findViewById(R.id.textViewCreateAccount);
+        textViewForgotPassword =
+                findViewById(R.id.textViewForgotPassword);
         progressBar = findViewById(R.id.progressBarLogin);
 
         buttonLogin.setOnClickListener(
                 view -> loginUser()
+        );
+
+        textViewForgotPassword.setOnClickListener(
+                view -> sendPasswordResetEmail()
         );
 
         textViewCreateAccount.setOnClickListener(view -> {
@@ -60,6 +67,49 @@ public class LoginActivity extends AppCompatActivity {
 
             startActivity(intent);
         });
+    }
+
+    private void sendPasswordResetEmail() {
+        String email =
+                editTextEmail.getText().toString().trim();
+
+        if (TextUtils.isEmpty(email)) {
+            editTextEmail.setError(
+                    getString(R.string.reset_email_required)
+            );
+            editTextEmail.requestFocus();
+            return;
+        }
+
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            editTextEmail.setError(
+                    getString(R.string.reset_email_invalid)
+            );
+            editTextEmail.requestFocus();
+            return;
+        }
+
+        showLoading(true);
+
+        firebaseAuth
+                .sendPasswordResetEmail(email)
+                .addOnCompleteListener(task -> {
+                    showLoading(false);
+
+                    if (task.isSuccessful()) {
+                        Toast.makeText(
+                                LoginActivity.this,
+                                getString(R.string.reset_email_sent),
+                                Toast.LENGTH_LONG
+                        ).show();
+                    } else {
+                        Toast.makeText(
+                                LoginActivity.this,
+                                getString(R.string.reset_email_failed),
+                                Toast.LENGTH_LONG
+                        ).show();
+                    }
+                });
     }
 
     private void loginUser() {
@@ -232,5 +282,6 @@ public class LoginActivity extends AppCompatActivity {
         );
 
         buttonLogin.setEnabled(!loading);
+        textViewForgotPassword.setEnabled(!loading);
     }
 }

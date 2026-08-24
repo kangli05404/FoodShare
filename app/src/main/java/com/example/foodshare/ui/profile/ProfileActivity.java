@@ -16,6 +16,7 @@ import com.example.foodshare.ui.auth.LoginActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import android.widget.ImageView;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -33,6 +34,9 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
+        ImageView imageViewLogo = findViewById(R.id.imageViewLogo);
+        imageViewLogo.setClipToOutline(true);
 
         firebaseAuth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
