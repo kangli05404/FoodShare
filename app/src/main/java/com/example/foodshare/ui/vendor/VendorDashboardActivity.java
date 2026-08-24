@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.foodshare.R;
 import com.example.foodshare.ui.auth.LoginActivity;
 import com.google.firebase.auth.FirebaseAuth;
+import com.example.foodshare.ui.profile.ProfileActivity;
 
 public class VendorDashboardActivity extends AppCompatActivity {
 
@@ -18,6 +19,19 @@ public class VendorDashboardActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vendor_dashboard);
+
+        Button buttonProfile = findViewById(
+                R.id.buttonVendorProfile
+        );
+
+        buttonProfile.setOnClickListener(view -> {
+            Intent intent = new Intent(
+                    VendorDashboardActivity.this,
+                    ProfileActivity.class
+            );
+
+            startActivity(intent);
+        });
 
         buttonLogout = findViewById(
                 R.id.buttonVendorLogout
