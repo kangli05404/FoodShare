@@ -18,6 +18,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import com.example.foodshare.ui.consumer.ConsumerHomeActivity;
+import com.example.foodshare.ui.vendor.VendorDashboardActivity;
+
 public class LoginActivity extends AppCompatActivity {
 
     private EditText editTextEmail;
@@ -148,11 +151,7 @@ public class LoginActivity extends AppCompatActivity {
                         return;
                     }
 
-                    Toast.makeText(
-                            LoginActivity.this,
-                            "Login successful. Role: " + role,
-                            Toast.LENGTH_LONG
-                    ).show();
+                    openDashboard(role);
 
                     // Consumer/vendor navigation will be added next.
                 })
@@ -167,6 +166,39 @@ public class LoginActivity extends AppCompatActivity {
                             Toast.LENGTH_LONG
                     ).show();
                 });
+    }
+
+    private void openDashboard(String role) {
+        Intent intent;
+
+        if ("CONSUMER".equalsIgnoreCase(role)) {
+            intent = new Intent(
+                    LoginActivity.this,
+                    ConsumerHomeActivity.class
+            );
+        } else if ("VENDOR".equalsIgnoreCase(role)) {
+            intent = new Intent(
+                    LoginActivity.this,
+                    VendorDashboardActivity.class
+            );
+        } else {
+            firebaseAuth.signOut();
+
+            Toast.makeText(
+                    LoginActivity.this,
+                    "Invalid user role.",
+                    Toast.LENGTH_LONG
+            ).show();
+
+            return;
+        }
+
+        intent.setFlags(
+                Intent.FLAG_ACTIVITY_NEW_TASK
+                        | Intent.FLAG_ACTIVITY_CLEAR_TASK
+        );
+
+        startActivity(intent);
     }
 
     private boolean validateInputs(

@@ -12,6 +12,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FoodShare">
         <activity
+            android:name=".ui.vendor.VendorDashboardActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.consumer.ConsumerHomeActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.auth.LoginActivity"
             android:exported="false" />
         <activity
