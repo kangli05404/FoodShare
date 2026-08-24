@@ -35,6 +35,9 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+        findViewById(R.id.buttonProfileBack)
+                .setOnClickListener(view -> finish());
+
         ImageView imageViewLogo = findViewById(R.id.imageViewLogo);
         imageViewLogo.setClipToOutline(true);
 

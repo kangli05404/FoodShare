@@ -36,5 +36,6 @@
     <string name="profile_role">ACCOUNT ROLE</string>
     <string name="profile_loading">Loading...</string>
     <string name="action_logout">Log Out</string>
+    <string name="action_back">Go back</string>
 
 </resources>

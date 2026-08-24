@@ -10,22 +10,40 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <!-- Green header -->
         <View
             android:layout_width="match_parent"
             android:layout_height="300dp"
             android:background="@drawable/bg_login_header" />
 
+        <!-- Back button -->
+        <ImageButton
+            android:id="@+id/buttonRegisterBack"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="top|start"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="18dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/action_back"
+            android:elevation="8dp"
+            android:padding="12dp"
+            android:src="@drawable/ic_arrow_back"
+            app:tint="@color/white" />
+
+        <!-- FoodShare logo -->
         <ImageView
+            android:id="@+id/imageViewRegisterLogo"
             android:layout_width="128dp"
             android:layout_height="128dp"
             android:layout_gravity="top|center_horizontal"
             android:layout_marginTop="50dp"
             android:background="@drawable/bg_logo_container"
-            android:clipToOutline="true"
             android:contentDescription="@string/app_logo_description"
             android:scaleType="centerCrop"
             android:src="@drawable/foodshare_logo" />
 
+        <!-- Registration form -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -58,6 +76,7 @@
                 android:textColor="@color/foodshare_text_secondary"
                 android:textSize="15sp" />
 
+            <!-- Full name -->
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
@@ -76,6 +95,7 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+            <!-- Email -->
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
@@ -95,6 +115,7 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+            <!-- Phone -->
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
@@ -114,6 +135,7 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+            <!-- Password -->
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
@@ -134,6 +156,7 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+            <!-- Confirm password -->
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
@@ -154,6 +177,7 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+            <!-- Role selection -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -191,6 +215,7 @@
 
             </RadioGroup>
 
+            <!-- Loading indicator -->
             <ProgressBar
                 android:id="@+id/progressBar"
                 android:layout_width="wrap_content"
@@ -200,6 +225,7 @@
                 android:indeterminateTint="@color/foodshare_green"
                 android:visibility="gone" />
 
+            <!-- Create account button -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/buttonRegister"
                 android:layout_width="match_parent"

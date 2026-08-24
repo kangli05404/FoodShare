@@ -16,6 +16,20 @@
             android:layout_height="280dp"
             android:background="@drawable/bg_login_header" />
 
+        <ImageButton
+            android:id="@+id/buttonProfileBack"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="top|start"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="18dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/action_back"
+            android:elevation="8dp"
+            android:padding="12dp"
+            android:src="@drawable/ic_arrow_back"
+            android:tint="@color/white" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

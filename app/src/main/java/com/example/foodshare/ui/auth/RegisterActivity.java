@@ -18,6 +18,7 @@ import com.example.foodshare.model.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import android.widget.ImageView;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -37,6 +38,14 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        findViewById(R.id.buttonRegisterBack)
+                .setOnClickListener(view -> finish());
+
+        ImageView imageViewRegisterLogo =
+                findViewById(R.id.imageViewRegisterLogo);
+
+        imageViewRegisterLogo.setClipToOutline(true);
 
         firebaseAuth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
