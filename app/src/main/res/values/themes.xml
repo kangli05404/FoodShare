@@ -1,8 +1,14 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+<resources>
     <style name="Base.Theme.FoodShare" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/foodshare_green</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/foodshare_brown</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <item name="colorSurface">@color/foodshare_surface</item>
+        <item name="colorOnSurface">@color/foodshare_text</item>
+        <item name="android:statusBarColor">@color/foodshare_dark_green</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:navigationBarColor">@color/foodshare_cream</item>
     </style>
 
     <style name="Theme.FoodShare" parent="Base.Theme.FoodShare" />

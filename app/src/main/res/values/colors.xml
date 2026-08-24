@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+
+    <color name="foodshare_green">#536B3D</color>
+    <color name="foodshare_dark_green">#344626</color>
+    <color name="foodshare_light_green">#E3ECD7</color>
+    <color name="foodshare_cream">#FFF8EA</color>
+    <color name="foodshare_surface">#FFFFFF</color>
+    <color name="foodshare_brown">#8B5E3C</color>
+    <color name="foodshare_gold">#E3B341</color>
+    <color name="foodshare_text">#252A22</color>
+    <color name="foodshare_text_secondary">#66705F</color>
+    <color name="foodshare_outline">#CDD5C3</color>
+    <color name="foodshare_error">#B3261E</color>
+    <color name="white">#FFFFFF</color>
+
 </resources>

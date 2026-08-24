@@ -1,3 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_name">FoodShare</string>
+    <string name="login_tagline">Save food. Share goodness.</string>
+    <string name="login_welcome">Welcome back</string>
+    <string name="login_subtitle">Log in to discover surplus food near you</string>
+    <string name="hint_email">Email address</string>
+    <string name="hint_password">Password</string>
+    <string name="action_login">Log In</string>
+    <string name="prompt_register">Don\'t have an account? Register</string>
+    <string name="login_title">Sign in</string>
+    <string name="login_form_subtitle">Welcome back to FoodShare</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="no_account">Don\'t have an account?</string>
+    <string name="action_register">Register</string>
+    <string name="app_logo_description">FoodShare logo</string>
+    <string name="register_title">Create account</string>
+    <string name="register_subtitle">Join FoodShare as a consumer or vendor</string>
+    <string name="hint_full_name">Full name</string>
+    <string name="hint_phone">Phone number</string>
+    <string name="hint_confirm_password">Confirm password</string>
+    <string name="register_as">Register as</string>
+    <string name="role_consumer">Consumer</string>
+    <string name="role_vendor">Vendor</string>
+    <string name="action_create_account">Create Account</string>
+
+
 </resources>
