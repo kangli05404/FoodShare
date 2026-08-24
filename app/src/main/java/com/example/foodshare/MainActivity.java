@@ -9,7 +9,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import android.content.Intent;
 
-import com.example.foodshare.ui.auth.RegisterActivity;
+import com.example.foodshare.ui.auth.LoginActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
         startActivity(
-                new Intent(MainActivity.this, RegisterActivity.class)
+                new Intent(MainActivity.this, LoginActivity.class)
         );
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
