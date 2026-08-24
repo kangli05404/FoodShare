@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "778569765293",
+    "project_id": "foodshare-5a041",
+    "storage_bucket": "foodshare-5a041.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:778569765293:android:a3bbe679f0a80ecab25124",
+        "android_client_info": {
+          "package_name": "com.example.foodshare"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCD7iCe6zIJ9HGCl6ETvSoO2rNBa0FIEoA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
