@@ -11,8 +11,6 @@ import com.example.foodshare.ui.auth.LoginActivity;
 import com.example.foodshare.ui.profile.ProfileActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 public class VendorDashboardActivity extends AppCompatActivity {
 
@@ -45,7 +43,6 @@ public class VendorDashboardActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // Refresh data when returning to dashboard
         loadDashboardData();
     }
 
@@ -68,13 +65,11 @@ public class VendorDashboardActivity extends AppCompatActivity {
         });
 
         buttonManageListings.setOnClickListener(view -> {
-            // TODO: Add ManageListingsActivity
-            Toast.makeText(this, "Manage Listings coming soon!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.manage_listings_coming, Toast.LENGTH_SHORT).show();
         });
 
         buttonVendorOrders.setOnClickListener(view -> {
-            // TODO: Add VendorOrdersActivity
-            Toast.makeText(this, "Vendor Orders coming soon!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.vendor_orders_coming, Toast.LENGTH_SHORT).show();
         });
 
         buttonVendorProfile.setOnClickListener(view -> {
@@ -87,18 +82,16 @@ public class VendorDashboardActivity extends AppCompatActivity {
 
     private void loadDashboardData() {
         if (firebaseAuth.getCurrentUser() == null) {
-            // User not logged in, redirect to login
             logout();
             return;
         }
 
         String vendorId = firebaseAuth.getCurrentUser().getUid();
 
-        // Set welcome message with email
         String email = firebaseAuth.getCurrentUser().getEmail();
         if (email != null && !email.isEmpty()) {
             String displayName = email.split("@")[0];
-            textVendorWelcome.setText("Welcome, " + displayName + "!");
+            textVendorWelcome.setText(String.format(getString(R.string.welcome_message), displayName));
         }
 
         loadActiveListingsCount(vendorId);
@@ -116,18 +109,15 @@ public class VendorDashboardActivity extends AppCompatActivity {
                 })
                 .addOnFailureListener(e -> {
                     textActiveListings.setText("0");
-                    Toast.makeText(this, "Failed to load listings count", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.failed_to_load_listings, Toast.LENGTH_SHORT).show();
                 });
     }
 
     private void loadTodayOrdersCount(String vendorId) {
-        // Get today's date range
         java.util.Calendar calendar = java.util.Calendar.getInstance();
         java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault());
         String today = sdf.format(calendar.getTime());
 
-        // Query orders for this vendor created today
-        // Note: This assumes you have a 'orders' collection with 'vendorId' and 'createdDate' fields
         firestore.collection("orders")
                 .whereEqualTo("vendorId", vendorId)
                 .whereEqualTo("createdDate", today)
@@ -138,7 +128,6 @@ public class VendorDashboardActivity extends AppCompatActivity {
                 })
                 .addOnFailureListener(e -> {
                     textTodayOrders.setText("0");
-                    // Don't show error toast as this might be a new collection
                 });
     }
 

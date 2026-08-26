@@ -18,7 +18,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Vendor Dashboard"
+            android:text="@string/vendor_dashboard_title"
             android:textColor="@color/foodshare_dark_green"
             android:textSize="28sp"
             android:textStyle="bold" />
@@ -28,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:text="Welcome, Vendor!"
+            android:text="@string/welcome_message_default"
             android:textColor="@color/foodshare_text_secondary"
             android:textSize="16sp" />
 
@@ -53,7 +53,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Active Listings"
+                    android:text="@string/active_listings"
                     android:textColor="@color/foodshare_text_secondary"
                     android:textSize="15sp" />
 
@@ -92,7 +92,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Today's Orders"
+                    android:text="@string/today_orders"
                     android:textColor="@color/foodshare_text_secondary"
                     android:textSize="15sp" />
 
@@ -118,7 +118,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="28dp"
             android:minHeight="56dp"
-            android:text="+  Create Listing"
+            android:text="@string/create_listing"
             android:textSize="16sp"
             android:textStyle="bold"
             app:backgroundTint="@color/foodshare_green"
@@ -132,7 +132,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:minHeight="52dp"
-            android:text="Manage Listings"
+            android:text="@string/manage_listings"
             android:textColor="@color/foodshare_green"
             android:textSize="15sp"
             app:backgroundTint="@color/foodshare_surface"
@@ -148,7 +148,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:minHeight="52dp"
-            android:text="Vendor Orders"
+            android:text="@string/vendor_orders"
             android:textColor="@color/foodshare_green"
             android:textSize="15sp"
             app:backgroundTint="@color/foodshare_surface"
@@ -164,7 +164,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:minHeight="52dp"
-            android:text="View Profile"
+            android:text="@string/view_profile"
             android:textColor="@color/foodshare_text"
             android:textSize="15sp"
             app:backgroundTint="@color/foodshare_surface"
@@ -181,7 +181,7 @@
             android:layout_marginTop="12dp"
             android:layout_marginBottom="20dp"
             android:minHeight="52dp"
-            android:text="Log Out"
+            android:text="@string/logout"
             android:textColor="@color/foodshare_error"
             android:textSize="15sp"
             app:backgroundTint="@color/foodshare_surface"

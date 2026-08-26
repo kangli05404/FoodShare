@@ -38,4 +38,107 @@
     <string name="action_logout">Log Out</string>
     <string name="action_back">Go back</string>
 
+
+    <!-- ============================================================ -->
+    <!-- VendorDashboardActivity                                        -->
+    <!-- ============================================================ -->
+    <string name="vendor_dashboard_title">Vendor Dashboard</string>
+    <string name="welcome_message_default">Welcome, Vendor!</string>
+    <string name="welcome_message">Welcome, %s!</string>
+    <string name="active_listings">Active Listings</string>
+    <string name="today_orders">Today\'s Orders</string>
+    <string name="create_listing">+  Create Listing</string>
+    <string name="manage_listings">Manage Listings</string>
+    <string name="vendor_orders">Vendor Orders</string>
+    <string name="view_profile">View Profile</string>
+    <string name="logout">Log Out</string>
+    <string name="manage_listings_coming">Manage Listings coming soon!</string>
+    <string name="vendor_orders_coming">Vendor Orders coming soon!</string>
+    <string name="failed_to_load_listings">Failed to load listings count</string>
+
+    <!-- ============================================================ -->
+    <!-- CreateListingActivity - Labels & Hints                         -->
+    <!-- ============================================================ -->
+    <string name="create_listing_title">Create Listing</string>
+    <string name="create_listing_subtitle">Add a Magic Box for customers to purchase.</string>
+    <string name="magic_box_image_label">Magic Box Image</string>
+    <string name="choose_image">Choose Magic Box Image</string>
+    <string name="image_selected">Image selected</string>
+    <string name="food_name_label">Food Name</string>
+    <string name="food_name_hint">e.g. Mixed Pastry Magic Box</string>
+    <string name="description_label">Description</string>
+    <string name="description_hint">Describe the food included in the Magic Box</string>
+    <string name="price_label">Original Price (RM)</string>
+    <string name="price_hint">0.00</string>
+    <string name="quantity_label">Quantity</string>
+    <string name="quantity_hint">Number of Magic Boxes</string>
+    <string name="dynamic_pricing_title">Dynamic Pricing</string>
+    <string name="dynamic_pricing_subtitle">Set the period and discount rules for this listing.</string>
+    <string name="discount_period_label">Discount Period</string>
+    <string name="select_discount_start">Select Discount Start Time</string>
+    <string name="select_discount_end">Select Discount End Time</string>
+    <string name="discount_rules_label">Discount Rules</string>
+    <string name="no_discount_rules">No discount rules added yet.</string>
+    <string name="add_discount_rule">+  Add Discount Rule</string>
+    <string name="create_listing_button">Create Listing</string>
+    <string name="cancel">Cancel</string>
+    <string name="creating_listing">Creating Listing...</string>
+    <string name="select_rule_start">Select Rule Start Time</string>
+    <string name="select_rule_end">Select Rule End Time</string>
+    <string name="discount_percentage_hint">Discount Percentage (%)</string>
+    <string name="discount_start_label">Discount Start: %s</string>
+    <string name="discount_end_label">Discount End: %s</string>
+    <string name="rule_start_label">Start: %s</string>
+    <string name="rule_end_label">End: %s</string>
+    <string name="discount_percent_format">%s%% discount</string>
+    <string name="time_range_format">%s – %s</string>
+
+    <!-- ============================================================ -->
+    <!-- CreateListingActivity - Dialogs                                -->
+    <!-- ============================================================ -->
+    <string name="choose_magic_box_image">Choose Magic Box Image</string>
+    <string name="discard_changes_title">Discard Changes?</string>
+    <string name="discard_changes_message">You have unsaved changes. Are you sure you want to leave?</string>
+    <string name="discard">Discard</string>
+    <string name="stay">Stay</string>
+    <string name="edit_discount_rule">Edit Discount Rule</string>
+    <string name="add_discount_rule_dialog">Add Discount Rule</string>
+    <string name="save">Save</string>
+    <string name="add">Add</string>
+    <string name="delete_discount_rule">Delete Discount Rule?</string>
+    <string name="delete_confirm_message">Are you sure you want to delete this rule?</string>
+    <string name="delete">Delete</string>
+
+    <!-- ============================================================ -->
+    <!-- CreateListingActivity - Toast Messages                         -->
+    <!-- ============================================================ -->
+    <string name="please_select_period">Please select Discount Start and End first.</string>
+    <string name="discount_start_before_end">Discount Start must be before Discount End.</string>
+    <string name="discount_end_after_start">Discount End must be after Discount Start.</string>
+    <string name="select_both_times">Please select both start and end time.</string>
+    <string name="rule_start_before_end">Rule start time must be before rule end time.</string>
+    <string name="rule_within_period">Rule time must be within Discount Start and End.</string>
+    <string name="enter_discount_percentage">Enter discount percentage</string>
+    <string name="invalid_discount">Invalid discount</string>
+    <string name="discount_range_error">Enter a value between 1 and 100</string>
+    <string name="overlap_error">This time overlaps with another discount rule.</string>
+    <string name="choose_image_error">Please choose a Magic Box image.</string>
+    <string name="select_period_error">Please select Discount Start and End.</string>
+    <string name="add_rule_error">Please add at least one discount rule.</string>
+    <string name="login_again">Please log in again.</string>
+    <string name="listing_created">Listing created successfully!</string>
+    <string name="listing_failed">Failed to create listing: %s</string>
+    <string name="time_between">Please select a time between %s and %s</string>
+
+    <!-- ============================================================ -->
+    <!-- CreateListingActivity - Validation Errors                      -->
+    <!-- ============================================================ -->
+    <string name="enter_food_name">Please enter food name</string>
+    <string name="enter_price">Please enter price</string>
+    <string name="invalid_price">Invalid price</string>
+    <string name="price_positive">Price must be greater than 0</string>
+    <string name="enter_quantity">Please enter quantity</string>
+    <string name="invalid_quantity">Invalid quantity</string>
+    <string name="quantity_positive">Quantity must be greater than 0</string>
+
 </resources>
