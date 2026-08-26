@@ -18,6 +18,9 @@
             android:name=".ui.vendor.VendorDashboardActivity"
             android:exported="false" />
         <activity
+            android:name=".ui.vendor.CreateListingActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.consumer.ConsumerHomeActivity"
             android:exported="false" />
         <activity

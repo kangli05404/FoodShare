@@ -1,44 +1,194 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="vertical"
-    android:padding="24dp">
+    android:background="@color/foodshare_cream">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="FoodShare"
-        android:textSize="30sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:text="Welcome, Vendor"
-        android:textSize="22sp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Vendor listing management will be added here."
-        android:textSize="15sp" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/buttonVendorProfile"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="View Profile" />
+        android:orientation="vertical"
+        android:padding="24dp">
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/buttonVendorLogout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="Log Out" />
+        <!-- Header -->
 
-</LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Vendor Dashboard"
+            android:textColor="@color/foodshare_dark_green"
+            android:textSize="28sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textVendorWelcome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="Welcome, Vendor!"
+            android:textColor="@color/foodshare_text_secondary"
+            android:textSize="16sp" />
+
+        <!-- Active Listings Card -->
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="110dp"
+            android:layout_marginTop="28dp"
+            app:cardBackgroundColor="@color/foodshare_surface"
+            app:cardCornerRadius="16dp"
+            app:strokeColor="@color/foodshare_outline"
+            app:strokeWidth="1dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Active Listings"
+                    android:textColor="@color/foodshare_text_secondary"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/textActiveListings"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="0"
+                    android:textColor="@color/foodshare_dark_green"
+                    android:textSize="28sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Today's Orders Card -->
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="110dp"
+            android:layout_marginTop="14dp"
+            app:cardBackgroundColor="@color/foodshare_surface"
+            app:cardCornerRadius="16dp"
+            app:strokeColor="@color/foodshare_outline"
+            app:strokeWidth="1dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Today's Orders"
+                    android:textColor="@color/foodshare_text_secondary"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/textTodayOrders"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="0"
+                    android:textColor="@color/foodshare_dark_green"
+                    android:textSize="28sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Create Listing -->
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonCreateListing"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:minHeight="56dp"
+            android:text="+  Create Listing"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:backgroundTint="@color/foodshare_green"
+            app:cornerRadius="14dp" />
+
+        <!-- Manage Listings -->
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonManageListings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:minHeight="52dp"
+            android:text="Manage Listings"
+            android:textColor="@color/foodshare_green"
+            android:textSize="15sp"
+            app:backgroundTint="@color/foodshare_surface"
+            app:cornerRadius="14dp"
+            app:strokeColor="@color/foodshare_green"
+            app:strokeWidth="1dp" />
+
+        <!-- Vendor Orders -->
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonVendorOrders"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:minHeight="52dp"
+            android:text="Vendor Orders"
+            android:textColor="@color/foodshare_green"
+            android:textSize="15sp"
+            app:backgroundTint="@color/foodshare_surface"
+            app:cornerRadius="14dp"
+            app:strokeColor="@color/foodshare_green"
+            app:strokeWidth="1dp" />
+
+        <!-- Profile -->
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonVendorProfile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:minHeight="52dp"
+            android:text="View Profile"
+            android:textColor="@color/foodshare_text"
+            android:textSize="15sp"
+            app:backgroundTint="@color/foodshare_surface"
+            app:cornerRadius="14dp"
+            app:strokeColor="@color/foodshare_outline"
+            app:strokeWidth="1dp" />
+
+        <!-- Logout -->
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonVendorLogout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="20dp"
+            android:minHeight="52dp"
+            android:text="Log Out"
+            android:textColor="@color/foodshare_error"
+            android:textSize="15sp"
+            app:backgroundTint="@color/foodshare_surface"
+            app:cornerRadius="14dp"
+            app:strokeColor="@color/foodshare_error"
+            app:strokeWidth="1dp" />
+
+    </LinearLayout>
+
+</ScrollView>
