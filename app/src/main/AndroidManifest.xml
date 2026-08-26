@@ -24,6 +24,12 @@
             android:name=".ui.consumer.ConsumerHomeActivity"
             android:exported="false" />
         <activity
+            android:name=".ui.vendor.ManageListingsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.vendor.EditListingActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.auth.LoginActivity"
             android:exported="false" />
         <activity

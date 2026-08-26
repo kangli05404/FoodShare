@@ -65,7 +65,8 @@ public class VendorDashboardActivity extends AppCompatActivity {
         });
 
         buttonManageListings.setOnClickListener(view -> {
-            Toast.makeText(this, R.string.manage_listings_coming, Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(VendorDashboardActivity.this, ManageListingsActivity.class);
+            startActivity(intent);
         });
 
         buttonVendorOrders.setOnClickListener(view -> {
