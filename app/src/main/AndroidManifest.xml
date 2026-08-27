@@ -2,7 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
     <application
+        android:name=".FoodShareApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -11,11 +16,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.FoodShare">
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="\${MAPS_API_KEY}" />
         <activity
             android:name=".ui.profile.ProfileActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.vendor.VendorDashboardActivity"
+            android:name=".ui.vendor.VendorMainActivity"
             android:exported="false" />
         <activity
             android:name=".ui.vendor.CreateListingActivity"
@@ -24,11 +32,20 @@
             android:name=".ui.consumer.ConsumerHomeActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.vendor.ManageListingsActivity"
-            android:exported="false" />
-        <activity
             android:name=".ui.vendor.EditListingActivity"
             android:exported="false" />
+        <activity
+            android:name=".ui.vendor.StoreLocationActivity"
+            android:exported="false" />
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
         <activity
             android:name=".ui.auth.LoginActivity"
             android:exported="false" />

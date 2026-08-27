@@ -35,7 +35,28 @@
     <string name="profile_phone">PHONE NUMBER</string>
     <string name="profile_role">ACCOUNT ROLE</string>
     <string name="profile_loading">Loading...</string>
+    <string name="store_location_label">STORE LOCATION</string>
+    <string name="store_location_not_set">No store location has been set.</string>
+    <string name="set_current_store_location">Choose Store Location on Map</string>
+    <string name="use_current_location">Use My Current Location</string>
+    <string name="save_store_location">Save Store Location</string>
+    <string name="store_map_title">Choose Store Location</string>
+    <string name="store_map_hint">Tap the map to place your store marker.</string>
+    <string name="getting_location">Getting location…</string>
+    <string name="location_permission_required">Location permission is required to set the store location.</string>
+    <string name="location_unavailable">Current location is unavailable. Turn on GPS and try again.</string>
+    <string name="location_saved">Store location saved.</string>
+    <string name="location_save_failed">Unable to save store location: %1$s</string>
+    <string name="change_password">Change Password</string>
+    <string name="current_password">Current password</string>
+    <string name="new_password">New password</string>
+    <string name="confirm_new_password">Confirm new password</string>
+    <string name="password_minimum">The new password must contain at least 6 characters.</string>
+    <string name="passwords_not_match">The new passwords do not match.</string>
+    <string name="password_changed">Password changed successfully.</string>
+    <string name="password_change_failed">Unable to change password: %1$s</string>
     <string name="action_logout">Log Out</string>
+    <string name="image_upload_failed">Image upload failed: %1$s</string>
     <string name="action_back">Go back</string>
 
 
@@ -43,8 +64,12 @@
     <!-- VendorDashboardActivity                                        -->
     <!-- ============================================================ -->
     <string name="vendor_dashboard_title">Vendor Dashboard</string>
-    <string name="welcome_message_default">Welcome, Vendor!</string>
-    <string name="welcome_message">Welcome, %s!</string>
+    <string name="welcome_message_default">Hello Vendor,</string>
+    <string name="vendor_dashboard_subtitle">Here’s how your shop is doing</string>
+    <string name="vendor_start_selling_title">Ready to share today’s surplus?</string>
+    <string name="vendor_start_selling_subtitle">Create a listing and help good food find a new home.</string>
+    <string name="quick_actions">Quick actions</string>
+    <string name="welcome_message">Hello %s,</string>
     <string name="active_listings">Active Listings</string>
     <string name="today_orders">Today\'s Orders</string>
     <string name="create_listing">+  Create Listing</string>
@@ -55,15 +80,31 @@
     <string name="manage_listings_coming">Manage Listings coming soon!</string>
     <string name="vendor_orders_coming">Vendor Orders coming soon!</string>
     <string name="failed_to_load_listings">Failed to load listings count</string>
+    <string name="today_label">Today</string>
+    <string name="view_reports">View reports</string>
+    <string name="overview_title">Overview</string>
+    <string name="total_revenue">Total revenue</string>
+    <string name="total_customers">Customers</string>
+    <string name="sales_analytics">Sales analytics</string>
+    <string name="sales_analytics_empty">Sales data will appear after your first order.</string>
+    <string name="nav_dashboard">Dashboard</string>
+    <string name="nav_listings">Listings</string>
+    <string name="nav_orders">Orders</string>
+    <string name="nav_profile">Profile</string>
 
     <!-- ============================================================ -->
     <!-- CreateListingActivity - Labels & Hints                         -->
     <!-- ============================================================ -->
     <string name="create_listing_title">Create Listing</string>
-    <string name="create_listing_subtitle">Add a Magic Box for customers to purchase.</string>
-    <string name="magic_box_image_label">Magic Box Image</string>
-    <string name="choose_image">Choose Magic Box Image</string>
+    <string name="create_listing_subtitle">Add surplus food for customers to purchase.</string>
+    <string name="magic_box_image_label">Food Image</string>
+    <string name="choose_image">Upload Food Image</string>
+    <string name="upload_food_image">Upload Food Image</string>
     <string name="image_selected">Image selected</string>
+    <string name="choose_image_source">Select food image source</string>
+    <string name="choose_from_device">Choose from device</string>
+    <string name="take_photo">Take a photo</string>
+    <string name="camera_open_failed">Unable to open the camera.</string>
     <string name="food_name_label">Food Name</string>
     <string name="food_name_hint">e.g. Mixed Pastry Magic Box</string>
     <string name="description_label">Description</string>
@@ -122,7 +163,7 @@
     <string name="invalid_discount">Invalid discount</string>
     <string name="discount_range_error">Enter a value between 1 and 100</string>
     <string name="overlap_error">This time overlaps with another discount rule.</string>
-    <string name="choose_image_error">Please choose a Magic Box image.</string>
+    <string name="choose_image_error">Please upload a food image.</string>
     <string name="select_period_error">Please select Discount Start and End.</string>
     <string name="add_rule_error">Please add at least one discount rule.</string>
     <string name="login_again">Please log in again.</string>

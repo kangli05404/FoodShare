@@ -19,7 +19,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import com.example.foodshare.ui.consumer.ConsumerHomeActivity;
-import com.example.foodshare.ui.vendor.VendorDashboardActivity;
+import com.example.foodshare.ui.vendor.VendorMainActivity;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -229,7 +229,7 @@ public class LoginActivity extends AppCompatActivity {
         } else if ("VENDOR".equalsIgnoreCase(role)) {
             intent = new Intent(
                     LoginActivity.this,
-                    VendorDashboardActivity.class
+                    VendorMainActivity.class
             );
         } else {
             firebaseAuth.signOut();

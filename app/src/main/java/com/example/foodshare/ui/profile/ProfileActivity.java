@@ -26,7 +26,6 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView textViewRole;
     private ProgressBar progressBar;
     private Button buttonLogout;
-
     private FirebaseAuth firebaseAuth;
     private FirebaseFirestore firestore;
 
@@ -106,6 +105,7 @@ public class ProfileActivity extends AppCompatActivity {
                     textViewEmail.setText(user.getEmail());
                     textViewPhone.setText(user.getPhone());
                     textViewRole.setText(user.getRole());
+
                 })
                 .addOnFailureListener(exception -> {
                     progressBar.setVisibility(View.GONE);

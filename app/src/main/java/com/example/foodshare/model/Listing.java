@@ -13,6 +13,7 @@ public class Listing {
     private int quantity;
     private int availableQuantity;
     private String imageName;
+    private String imageUrl;
     private String discountStart;
     private String discountEnd;
     private List<Map<String, Object>> discountRules;
@@ -61,6 +62,9 @@ public class Listing {
 
     public String getImageName() { return imageName; }
     public void setImageName(String imageName) { this.imageName = imageName; }
+
+    public String getImageUrl() { return imageUrl; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 
     public String getDiscountStart() { return discountStart; }
     public void setDiscountStart(String discountStart) { this.discountStart = discountStart; }

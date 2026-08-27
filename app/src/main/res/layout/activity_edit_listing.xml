@@ -49,22 +49,6 @@
             android:textColor="@color/foodshare_text_secondary"
             android:textSize="16sp" />
 
-        <!-- Rest of the layout remains the same -->
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="28dp"
-            android:hint="Food Name">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/editFoodName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textCapSentences" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -113,7 +97,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:text="Magic Box Image"
+            android:text="Food Image"
             android:textColor="@color/foodshare_text"
             android:textSize="16sp"
             android:textStyle="bold" />
@@ -133,7 +117,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="Choose Magic Box Image"
+            android:text="Upload Food Image"
             android:textSize="15sp"
             app:backgroundTint="@color/foodshare_surface"
             app:cornerRadius="14dp"
