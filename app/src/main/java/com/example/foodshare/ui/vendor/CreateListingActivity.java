@@ -1,7 +1,10 @@
 package com.example.foodshare.ui.vendor;
 
 import android.app.TimePickerDialog;
+import android.net.Uri;
 import android.os.Bundle;
+import java.io.File;
+import java.io.IOException;
 import android.text.InputType;
 import android.view.Gravity;
 import android.view.View;
@@ -14,7 +17,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.core.content.FileProvider;
 import com.example.foodshare.R;
+import com.example.foodshare.util.CloudinaryUploader;
+import com.cloudinary.android.callback.ErrorInfo;
+import com.cloudinary.android.callback.UploadCallback;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -30,7 +39,6 @@ public class CreateListingActivity extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
     private FirebaseFirestore firestore;
 
-    private EditText editFoodName;
     private EditText editDescription;
     private EditText editPrice;
     private EditText editQuantity;
@@ -45,6 +53,10 @@ public class CreateListingActivity extends AppCompatActivity {
 
     private String selectedImageName = "";
     private int selectedImageResource = 0;
+    private Uri selectedImageUri;
+    private ActivityResultLauncher<String> imagePickerLauncher;
+    private ActivityResultLauncher<Uri> cameraLauncher;
+    private Uri cameraImageUri;
     private String discountStart = "";
     private String discountEnd = "";
 
@@ -73,7 +85,30 @@ public class CreateListingActivity extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
 
-        editFoodName = findViewById(R.id.editFoodName);
+        imagePickerLauncher = registerForActivityResult(
+                new ActivityResultContracts.GetContent(),
+                uri -> {
+                    if (uri != null) {
+                        selectedImageUri = uri;
+                        selectedImageName = "uploaded";
+                        imageListing.setImageURI(uri);
+                        Toast.makeText(this, R.string.image_selected, Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
+
+        cameraLauncher = registerForActivityResult(
+                new ActivityResultContracts.TakePicture(),
+                captured -> {
+                    if (captured && cameraImageUri != null) {
+                        selectedImageUri = cameraImageUri;
+                        selectedImageName = "camera";
+                        imageListing.setImageURI(cameraImageUri);
+                        Toast.makeText(this, R.string.image_selected, Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
+
         editDescription = findViewById(R.id.editDescription);
         editPrice = findViewById(R.id.editPrice);
         editQuantity = findViewById(R.id.editQuantity);
@@ -105,7 +140,7 @@ public class CreateListingActivity extends AppCompatActivity {
 
         updateDiscountRules();
 
-        buttonChooseImage.setOnClickListener(view -> showMagicBoxImageDialog());
+        buttonChooseImage.setOnClickListener(view -> showImageSourceDialog());
         buttonDiscountStart.setOnClickListener(view -> showDiscountStartPicker());
         buttonDiscountEnd.setOnClickListener(view -> showDiscountEndPicker());
         buttonAddDiscountRule.setOnClickListener(view -> {
@@ -118,14 +153,43 @@ public class CreateListingActivity extends AppCompatActivity {
         buttonCreateListing.setOnClickListener(view -> createListing());
     }
 
+    private void showImageSourceDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.choose_image_source)
+                .setItems(new String[]{
+                        getString(R.string.choose_from_device),
+                        getString(R.string.take_photo)
+                }, (dialog, which) -> {
+                    if (which == 0) {
+                        imagePickerLauncher.launch("image/*");
+                    } else {
+                        openCamera();
+                    }
+                })
+                .show();
+    }
+
+    private void openCamera() {
+        try {
+            File imageFile = File.createTempFile("foodshare_camera_", ".jpg", getCacheDir());
+            cameraImageUri = FileProvider.getUriForFile(
+                    this,
+                    getPackageName() + ".fileprovider",
+                    imageFile
+            );
+            cameraLauncher.launch(cameraImageUri);
+        } catch (IOException exception) {
+            Toast.makeText(this, R.string.camera_open_failed, Toast.LENGTH_LONG).show();
+        }
+    }
+
     private boolean hasUnsavedChanges() {
-        String foodName = editFoodName.getText().toString().trim();
         String description = editDescription.getText().toString().trim();
         String price = editPrice.getText().toString().trim();
         String quantity = editQuantity.getText().toString().trim();
 
-        return !foodName.isEmpty() || !description.isEmpty() || !price.isEmpty()
-                || !quantity.isEmpty() || !selectedImageName.isEmpty()
+        return !description.isEmpty() || !price.isEmpty()
+                || !quantity.isEmpty() || selectedImageUri != null
                 || !discountStart.isEmpty() || !discountEnd.isEmpty()
                 || !discountRules.isEmpty();
     }
@@ -574,16 +638,9 @@ public class CreateListingActivity extends AppCompatActivity {
     }
 
     private void createListing() {
-        String foodName = editFoodName.getText().toString().trim();
         String description = editDescription.getText().toString().trim();
         String priceText = editPrice.getText().toString().trim();
         String quantityText = editQuantity.getText().toString().trim();
-
-        if (foodName.isEmpty()) {
-            editFoodName.setError(getString(R.string.enter_food_name));
-            editFoodName.requestFocus();
-            return;
-        }
 
         if (priceText.isEmpty()) {
             editPrice.setError(getString(R.string.enter_price));
@@ -627,7 +684,7 @@ public class CreateListingActivity extends AppCompatActivity {
             return;
         }
 
-        if (selectedImageName.isEmpty()) {
+        if (selectedImageUri == null) {
             Toast.makeText(CreateListingActivity.this, R.string.choose_image_error, Toast.LENGTH_LONG).show();
             return;
         }
@@ -657,12 +714,13 @@ public class CreateListingActivity extends AppCompatActivity {
         Map<String, Object> listing = new HashMap<>();
         listing.put("listingId", listingId);
         listing.put("vendorId", vendorId);
-        listing.put("foodName", foodName);
+        // Every vendor listing represents one standard Magic Box.
+        listing.put("foodName", "Magic Box");
         listing.put("description", description);
         listing.put("originalPrice", price);
         listing.put("quantity", quantity);
         listing.put("availableQuantity", quantity);
-        listing.put("imageName", selectedImageName);
+        listing.put("imageName", "");
         listing.put("discountStart", discountStart);
         listing.put("discountEnd", discountEnd);
 
@@ -679,18 +737,53 @@ public class CreateListingActivity extends AppCompatActivity {
         listing.put("status", "ACTIVE");
         listing.put("createdAt", FieldValue.serverTimestamp());
 
-        firestore.collection("listings").document(listingId)
-                .set(listing)
-                .addOnSuccessListener(unused -> {
-                    Toast.makeText(CreateListingActivity.this, R.string.listing_created, Toast.LENGTH_LONG).show();
-                    finish();
-                })
-                .addOnFailureListener(exception -> {
+        CloudinaryUploader.upload(selectedImageUri, new UploadCallback() {
+            @Override
+            public void onStart(String requestId) {
+            }
+
+            @Override
+            public void onProgress(String requestId, long bytes, long totalBytes) {
+            }
+
+            @Override
+            public void onSuccess(String requestId, Map resultData) {
+                Object secureUrl = resultData.get("secure_url");
+                if (secureUrl == null) {
                     resetCreateButton();
                     Toast.makeText(CreateListingActivity.this,
-                            String.format(getString(R.string.listing_failed), exception.getMessage()),
+                            String.format(getString(R.string.image_upload_failed),
+                                    "Cloudinary did not return an image URL."),
                             Toast.LENGTH_LONG).show();
-                });
+                    return;
+                }
+                listing.put("imageUrl", secureUrl.toString());
+                    firestore.collection("listings").document(listingId)
+                            .set(listing)
+                            .addOnSuccessListener(unused -> {
+                                Toast.makeText(CreateListingActivity.this, R.string.listing_created, Toast.LENGTH_LONG).show();
+                                finish();
+                            })
+                            .addOnFailureListener(exception -> {
+                                resetCreateButton();
+                                Toast.makeText(CreateListingActivity.this,
+                                        String.format(getString(R.string.listing_failed), exception.getMessage()),
+                                        Toast.LENGTH_LONG).show();
+                            });
+            }
+
+            @Override
+            public void onError(String requestId, ErrorInfo error) {
+                resetCreateButton();
+                Toast.makeText(CreateListingActivity.this,
+                        String.format(getString(R.string.image_upload_failed), error.getDescription()),
+                        Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onReschedule(String requestId, ErrorInfo error) {
+            }
+        });
     }
 
     private void resetCreateButton() {

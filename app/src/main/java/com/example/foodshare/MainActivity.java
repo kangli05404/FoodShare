@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.foodshare.ui.auth.LoginActivity;
 import com.example.foodshare.ui.consumer.ConsumerHomeActivity;
-import com.example.foodshare.ui.vendor.VendorDashboardActivity;
+import com.example.foodshare.ui.vendor.VendorMainActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
         } else if ("VENDOR".equalsIgnoreCase(role)) {
             intent = new Intent(
                     MainActivity.this,
-                    VendorDashboardActivity.class
+                    VendorMainActivity.class
             );
         } else {
             firebaseAuth.signOut();

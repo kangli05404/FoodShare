@@ -1,194 +1,299 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/foodshare_cream">
+    android:background="@color/foodshare_cream"
+    android:orientation="vertical">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="24dp">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
 
-        <!-- Header -->
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/vendor_dashboard_title"
-            android:textColor="@color/foodshare_dark_green"
-            android:textSize="28sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/textVendorWelcome"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:text="@string/welcome_message_default"
-            android:textColor="@color/foodshare_text_secondary"
-            android:textSize="16sp" />
-
-        <!-- Active Listings Card -->
-
-        <com.google.android.material.card.MaterialCardView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="110dp"
-            android:layout_marginTop="28dp"
-            app:cardBackgroundColor="@color/foodshare_surface"
-            app:cardCornerRadius="16dp"
-            app:strokeColor="@color/foodshare_outline"
-            app:strokeWidth="1dp">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="24dp"
+            android:paddingTop="28dp"
+            android:paddingEnd="24dp"
+            android:paddingBottom="24dp">
+
+            <TextView
+                android:id="@+id/textVendorWelcome"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/welcome_message_default"
+                android:textColor="@color/foodshare_text"
+                android:textSize="26sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="@string/vendor_dashboard_subtitle"
+                android:textColor="@color/foodshare_text_secondary"
+                android:textSize="16sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
                 android:gravity="center_vertical"
-                android:orientation="vertical"
-                android:padding="20dp">
+                android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/active_listings"
+                    android:layout_weight="1"
+                    android:text="@string/today_label"
                     android:textColor="@color/foodshare_text_secondary"
-                    android:textSize="15sp" />
+                    android:textSize="14sp" />
 
                 <TextView
-                    android:id="@+id/textActiveListings"
+                    android:id="@+id/buttonViewReports"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="0"
-                    android:textColor="@color/foodshare_dark_green"
-                    android:textSize="28sp"
+                    android:text="@string/view_reports"
+                    android:textColor="@color/foodshare_green"
+                    android:textSize="14sp"
                     android:textStyle="bold" />
-
             </LinearLayout>
-
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- Today's Orders Card -->
-
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="110dp"
-            android:layout_marginTop="14dp"
-            app:cardBackgroundColor="@color/foodshare_surface"
-            app:cardCornerRadius="16dp"
-            app:strokeColor="@color/foodshare_outline"
-            app:strokeWidth="1dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:orientation="vertical"
-                android:padding="20dp">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/today_orders"
-                    android:textColor="@color/foodshare_text_secondary"
-                    android:textSize="15sp" />
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="0dp"
+                    android:layout_height="132dp"
+                    android:layout_marginEnd="6dp"
+                    android:layout_weight="1"
+                    app:cardBackgroundColor="@color/foodshare_surface"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="1dp"
+                    app:strokeColor="@color/foodshare_outline"
+                    app:strokeWidth="1dp">
 
-                <TextView
-                    android:id="@+id/textTodayOrders"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="0"
-                    android:textColor="@color/foodshare_dark_green"
-                    android:textSize="28sp"
-                    android:textStyle="bold" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:orientation="vertical"
+                        android:padding="16dp">
 
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/active_listings"
+                            android:textColor="@color/foodshare_text_secondary"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/textActiveListings"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:text="0"
+                            android:textColor="@color/foodshare_green"
+                            android:textSize="30sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="0dp"
+                    android:layout_height="132dp"
+                    android:layout_marginStart="6dp"
+                    android:layout_weight="1"
+                    app:cardBackgroundColor="@color/foodshare_surface"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="1dp"
+                    app:strokeColor="@color/foodshare_outline"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/today_orders"
+                            android:textColor="@color/foodshare_text_secondary"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/textTodayOrders"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:text="0"
+                            android:textColor="@color/foodshare_green"
+                            android:textSize="30sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
 
-        </com.google.android.material.card.MaterialCardView>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:text="@string/overview_title"
+                android:textColor="@color/foodshare_text"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
-        <!-- Create Listing -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="horizontal">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/buttonCreateListing"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="28dp"
-            android:minHeight="56dp"
-            android:text="@string/create_listing"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:backgroundTint="@color/foodshare_green"
-            app:cornerRadius="14dp" />
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="0dp"
+                    android:layout_height="100dp"
+                    android:layout_marginEnd="6dp"
+                    android:layout_weight="1"
+                    app:cardBackgroundColor="@color/foodshare_surface"
+                    app:cardCornerRadius="16dp"
+                    app:strokeColor="@color/foodshare_outline"
+                    app:strokeWidth="1dp">
 
-        <!-- Manage Listings -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:orientation="vertical"
+                        android:padding="14dp">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/buttonManageListings"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:minHeight="52dp"
-            android:text="@string/manage_listings"
-            android:textColor="@color/foodshare_green"
-            android:textSize="15sp"
-            app:backgroundTint="@color/foodshare_surface"
-            app:cornerRadius="14dp"
-            app:strokeColor="@color/foodshare_green"
-            app:strokeWidth="1dp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/total_revenue"
+                            android:textColor="@color/foodshare_text"
+                            android:textSize="14sp" />
 
-        <!-- Vendor Orders -->
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:text="RM 0"
+                            android:textColor="@color/foodshare_green"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/buttonVendorOrders"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:minHeight="52dp"
-            android:text="@string/vendor_orders"
-            android:textColor="@color/foodshare_green"
-            android:textSize="15sp"
-            app:backgroundTint="@color/foodshare_surface"
-            app:cornerRadius="14dp"
-            app:strokeColor="@color/foodshare_green"
-            app:strokeWidth="1dp" />
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="0dp"
+                    android:layout_height="100dp"
+                    android:layout_marginStart="6dp"
+                    android:layout_weight="1"
+                    app:cardBackgroundColor="@color/foodshare_surface"
+                    app:cardCornerRadius="16dp"
+                    app:strokeColor="@color/foodshare_outline"
+                    app:strokeWidth="1dp">
 
-        <!-- Profile -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:orientation="vertical"
+                        android:padding="14dp">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/buttonVendorProfile"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:minHeight="52dp"
-            android:text="@string/view_profile"
-            android:textColor="@color/foodshare_text"
-            android:textSize="15sp"
-            app:backgroundTint="@color/foodshare_surface"
-            app:cornerRadius="14dp"
-            app:strokeColor="@color/foodshare_outline"
-            app:strokeWidth="1dp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/total_customers"
+                            android:textColor="@color/foodshare_text"
+                            android:textSize="14sp" />
 
-        <!-- Logout -->
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:text="0"
+                            android:textColor="@color/foodshare_green"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/buttonVendorLogout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="20dp"
-            android:minHeight="52dp"
-            android:text="@string/logout"
-            android:textColor="@color/foodshare_error"
-            android:textSize="15sp"
-            app:backgroundTint="@color/foodshare_surface"
-            app:cornerRadius="14dp"
-            app:strokeColor="@color/foodshare_error"
-            app:strokeWidth="1dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:text="@string/sales_analytics"
+                android:textColor="@color/foodshare_text"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
-    </LinearLayout>
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_marginTop="12dp"
+                app:cardBackgroundColor="@color/foodshare_surface"
+                app:cardCornerRadius="18dp"
+                app:strokeColor="@color/foodshare_outline"
+                app:strokeWidth="1dp">
 
-</ScrollView>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="@string/sales_analytics_empty"
+                    android:textColor="@color/foodshare_text_secondary"
+                    android:textSize="14sp" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonCreateListing"
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:layout_marginTop="20dp"
+                android:text="@string/create_listing"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                app:backgroundTint="@color/foodshare_green"
+                app:cornerRadius="14dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonManageListings"
+                android:layout_width="1dp"
+                android:layout_height="1dp"
+                android:visibility="gone" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonVendorOrders"
+                android:layout_width="1dp"
+                android:layout_height="1dp"
+                android:visibility="gone" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonVendorProfile"
+                android:layout_width="1dp"
+                android:layout_height="1dp"
+                android:visibility="gone" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonVendorLogout"
+                android:layout_width="1dp"
+                android:layout_height="1dp"
+                android:visibility="gone" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <include layout="@layout/view_vendor_bottom_nav" />
+
+</LinearLayout>

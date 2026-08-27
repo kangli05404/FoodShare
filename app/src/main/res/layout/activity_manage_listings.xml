@@ -96,4 +96,6 @@
 
     </ScrollView>
 
+    <include layout="@layout/view_vendor_bottom_nav" />
+
 </LinearLayout>

@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:background="@color/foodshare_cream"
+    >
+
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="1"
     android:fillViewport="true">
 
     <FrameLayout
@@ -190,6 +197,61 @@
                     android:textSize="17sp"
                     android:textStyle="bold" />
 
+                <LinearLayout
+                    android:id="@+id/layoutVendorAccountActions"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="18dp"
+                        android:layout_marginBottom="18dp"
+                        android:background="@color/foodshare_outline" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/store_location_label"
+                        android:textColor="@color/foodshare_text_secondary"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/textViewStoreLocation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="@string/store_location_not_set"
+                        android:textColor="@color/foodshare_text"
+                        android:textSize="16sp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/buttonSetStoreLocation"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="54dp"
+                        android:layout_marginTop="16dp"
+                        android:text="@string/set_current_store_location"
+                        android:textColor="@color/foodshare_green"
+                        app:cornerRadius="14dp"
+                        app:strokeColor="@color/foodshare_green" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/buttonChangePassword"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="54dp"
+                        android:layout_marginTop="12dp"
+                        android:text="@string/change_password"
+                        android:textColor="@color/foodshare_green"
+                        app:cornerRadius="14dp"
+                        app:strokeColor="@color/foodshare_green" />
+
+                </LinearLayout>
+
                 <!-- Logout -->
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/buttonProfileLogout"
@@ -210,3 +272,5 @@
     </FrameLayout>
 
 </ScrollView>
+
+</LinearLayout>
