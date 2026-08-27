@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="foodshare_green">#536B3D</color>
+    <color name="foodshare_green">#6F8F4E</color>
     <color name="foodshare_dark_green">#344626</color>
-    <color name="foodshare_light_green">#E3ECD7</color>
-    <color name="foodshare_cream">#FFF8EA</color>
+    <color name="foodshare_light_green">#9EBB74</color>
+    <color name="foodshare_cream">#FAF8F3</color>
     <color name="foodshare_surface">#FFFFFF</color>
     <color name="foodshare_brown">#8B5E3C</color>
     <color name="foodshare_gold">#E3B341</color>
