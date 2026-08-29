@@ -52,9 +52,13 @@ public class VendorListingsFragment extends Fragment {
 
         firebaseAuth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
+
         layoutListings = view.findViewById(R.id.layoutListings);
         textEmptyListings = view.findViewById(R.id.textEmptyListings);
         textListingCount = view.findViewById(R.id.textListingCount);
+
+        View buttonCreateListing = view.findViewById(R.id.buttonCreateListing);
+        buttonCreateListing.setOnClickListener(v -> startActivity(new Intent(requireContext(), CreateListingActivity.class)));
     }
 
     @Override
@@ -86,7 +90,10 @@ public class VendorListingsFragment extends Fragment {
                     }
 
                     textEmptyListings.setVisibility(View.GONE);
-                    for (DocumentSnapshot document : listings) addListingView(document);
+
+                    for (DocumentSnapshot document : listings) {
+                        addListingView(document);
+                    }
                 })
                 .addOnFailureListener(exception -> {
                     clearListingViews();
@@ -97,7 +104,9 @@ public class VendorListingsFragment extends Fragment {
     }
 
     private void clearListingViews() {
-        while (layoutListings.getChildCount() > 1) layoutListings.removeViewAt(1);
+        while (layoutListings.getChildCount() > 1) {
+            layoutListings.removeViewAt(1);
+        }
     }
 
     private void addListingView(DocumentSnapshot document) {
@@ -117,10 +126,11 @@ public class VendorListingsFragment extends Fragment {
         String id = document.getId();
         String name = stringValue(document, "foodName");
         String categoryValue = stringValue(document, "category");
+        String descriptionValue = stringValue(document, "description");
 
         foodName.setText(name.isEmpty() ? "Unnamed Box" : name);
         category.setText(categoryValue.isEmpty() ? "Uncategorized" : categoryValue);
-        description.setText(stringValue(document, "description").isEmpty() ? "No description" : stringValue(document, "description"));
+        description.setText(descriptionValue.isEmpty() ? "No description" : descriptionValue);
         price.setText(String.format(Locale.getDefault(), "RM %.2f", numberValue(document, "originalPrice")));
 
         int total = intValue(document, "quantity");
@@ -134,23 +144,31 @@ public class VendorListingsFragment extends Fragment {
         period.setText(start.isEmpty() || end.isEmpty() ? "Availability: Not set" : "Availability: " + start + " - " + end);
         rules.setText(formatDiscountRules(discountRules));
 
-        edit.setOnClickListener(view -> {
+        edit.setOnClickListener(v -> {
             Intent intent = new Intent(requireContext(), EditListingActivity.class);
             intent.putExtra("listingId", id);
             startActivity(intent);
         });
 
-        delete.setOnClickListener(view -> new AlertDialog.Builder(requireContext())
+        delete.setOnClickListener(v -> new AlertDialog.Builder(requireContext())
                 .setTitle("Delete Listing?")
                 .setMessage("Are you sure you want to delete \"" + name + "\"?")
                 .setNegativeButton("Cancel", null)
                 .setPositiveButton("Delete", (dialog, which) ->
-                        firestore.collection("listings").document(id).delete().addOnSuccessListener(unused -> loadListings()))
+                        firestore.collection("listings").document(id).delete()
+                                .addOnSuccessListener(unused -> loadListings()))
                 .show());
 
         String imageUrl = stringValue(document, "imageUrl");
-        if (!imageUrl.isEmpty()) Glide.with(this).load(imageUrl).placeholder(R.drawable.magic_box_01).into(image);
-        else image.setImageResource(R.drawable.magic_box_01);
+
+        if (!imageUrl.isEmpty()) {
+            Glide.with(this)
+                    .load(imageUrl)
+                    .placeholder(R.drawable.magic_box_01)
+                    .into(image);
+        } else {
+            image.setImageResource(R.drawable.magic_box_01);
+        }
 
         layoutListings.addView(listingView);
     }
@@ -166,12 +184,15 @@ public class VendorListingsFragment extends Fragment {
         StringBuilder result = new StringBuilder("Discount Rules:");
 
         for (Map<String, Object> value : values) {
+            Object discountObject = value.get("discountPercent");
+            double discount = discountObject instanceof Number ? ((Number) discountObject).doubleValue() : 0;
+
             result.append("\n")
                     .append(value.get("startTime"))
                     .append(" - ")
                     .append(value.get("endTime"))
                     .append(" : ")
-                    .append(TimeUtils.formatDiscount(((Number) value.get("discountPercent")).doubleValue()))
+                    .append(TimeUtils.formatDiscount(discount))
                     .append("%");
         }
 
