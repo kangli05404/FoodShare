@@ -89,12 +89,14 @@ public class ListingAdapter extends RecyclerView.Adapter<ListingAdapter.ListingV
 
         holder.buttonAddToCart.setOnClickListener(v -> {
             executor.execute(() -> {
+                // Pass vendorId along with the rest of the cart fields
                 CartItem cartItem = new CartItem(
                         listing.getListingId(),
+                        listing.getVendorId(),
                         listing.getFoodName(),
                         listing.getOriginalPrice(),
                         1,
-                        listing.getImageName()
+                        listing.getImageUrl()
                 );
                 CartDatabase.getInstance(context.getApplicationContext())
                         .cartDao().insert(cartItem);

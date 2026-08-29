@@ -15,6 +15,9 @@ public class CartItem {
     @ColumnInfo(name = "listing_id")
     public String listingId;
 
+    @ColumnInfo(name = "vendor_id")
+    public String vendorId;
+
     @ColumnInfo(name = "food_name")
     public String foodName;
 
@@ -27,8 +30,10 @@ public class CartItem {
     @ColumnInfo(name = "image_url")
     public String imageUrl;
 
-    public CartItem(@NonNull String listingId, String foodName, double price, int quantity, String imageUrl) {
+    // Update your constructor to accept vendorId
+    public CartItem(@NonNull String listingId, String vendorId, String foodName, double price, int quantity, String imageUrl) {
         this.listingId = listingId;
+        this.vendorId = vendorId;
         this.foodName = foodName;
         this.price = price;
         this.quantity = quantity;

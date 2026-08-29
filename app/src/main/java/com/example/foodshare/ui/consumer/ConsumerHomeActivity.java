@@ -21,6 +21,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.example.foodshare.ui.orders.OrderHistoryActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,7 +76,8 @@ public class ConsumerHomeActivity extends AppCompatActivity {
             if (id == R.id.nav_home) {
                 return true; // already here
             } else if (id == R.id.nav_orders) {
-                Toast.makeText(this, "Order history coming soon", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(ConsumerHomeActivity.this, OrderHistoryActivity.class));
+                finish();
                 return true;
             } else if (id == R.id.nav_cart) {
                 startActivity(new Intent(ConsumerHomeActivity.this, CartActivity.class));

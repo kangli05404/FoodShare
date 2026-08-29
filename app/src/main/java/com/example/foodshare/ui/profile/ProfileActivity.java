@@ -13,9 +13,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.foodshare.R;
 import com.example.foodshare.model.User;
 import com.example.foodshare.ui.auth.LoginActivity;
-import com.example.foodshare.ui.consumer.CartActivity;
-import com.example.foodshare.ui.consumer.ConsumerHomeActivity;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -29,7 +26,6 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView textViewRole;
     private ProgressBar progressBar;
     private Button buttonLogout;
-    private BottomNavigationView bottomNav;
     private FirebaseAuth firebaseAuth;
     private FirebaseFirestore firestore;
 
@@ -47,21 +43,35 @@ public class ProfileActivity extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
 
-        textViewName = findViewById(R.id.textViewProfileName);
-        textViewEmail = findViewById(R.id.textViewProfileEmail);
-        textViewPhone = findViewById(R.id.textViewProfilePhone);
-        textViewRole = findViewById(R.id.textViewProfileRole);
-        progressBar = findViewById(R.id.progressBarProfile);
-        buttonLogout = findViewById(R.id.buttonProfileLogout);
-        bottomNav = findViewById(R.id.bottomNav);
+        textViewName = findViewById(
+                R.id.textViewProfileName
+        );
+        textViewEmail = findViewById(
+                R.id.textViewProfileEmail
+        );
+        textViewPhone = findViewById(
+                R.id.textViewProfilePhone
+        );
+        textViewRole = findViewById(
+                R.id.textViewProfileRole
+        );
+        progressBar = findViewById(
+                R.id.progressBarProfile
+        );
+        buttonLogout = findViewById(
+                R.id.buttonProfileLogout
+        );
 
-        buttonLogout.setOnClickListener(view -> logout());
+        buttonLogout.setOnClickListener(
+                view -> logout()
+        );
 
         loadUserProfile();
     }
 
     private void loadUserProfile() {
-        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+        FirebaseUser currentUser =
+                firebaseAuth.getCurrentUser();
 
         if (currentUser == null) {
             openLogin();
@@ -77,7 +87,9 @@ public class ProfileActivity extends AppCompatActivity {
                 .addOnSuccessListener(documentSnapshot -> {
                     progressBar.setVisibility(View.GONE);
 
-                    User user = documentSnapshot.toObject(User.class);
+                    User user = documentSnapshot.toObject(
+                            User.class
+                    );
 
                     if (user == null) {
                         Toast.makeText(
@@ -85,6 +97,7 @@ public class ProfileActivity extends AppCompatActivity {
                                 "Profile was not found.",
                                 Toast.LENGTH_LONG
                         ).show();
+
                         return;
                     }
 
@@ -93,42 +106,17 @@ public class ProfileActivity extends AppCompatActivity {
                     textViewPhone.setText(user.getPhone());
                     textViewRole.setText(user.getRole());
 
-                    // Only show consumer bottom nav for CONSUMER role
-                    if (user.getRole() != null && user.getRole().equalsIgnoreCase("CONSUMER")) {
-                        setupConsumerBottomNav();
-                    }
                 })
                 .addOnFailureListener(exception -> {
                     progressBar.setVisibility(View.GONE);
 
                     Toast.makeText(
                             ProfileActivity.this,
-                            "Unable to load profile: " + exception.getMessage(),
+                            "Unable to load profile: "
+                                    + exception.getMessage(),
                             Toast.LENGTH_LONG
                     ).show();
                 });
-    }
-
-    private void setupConsumerBottomNav() {
-        bottomNav.setVisibility(View.VISIBLE);
-        bottomNav.setSelectedItemId(R.id.nav_profile);
-        bottomNav.setOnItemSelectedListener(item -> {
-            int id = item.getItemId();
-            if (id == R.id.nav_home) {
-                startActivity(new Intent(ProfileActivity.this, ConsumerHomeActivity.class));
-                finish();
-                return true;
-            } else if (id == R.id.nav_orders) {
-                Toast.makeText(this, "Order history coming soon", Toast.LENGTH_SHORT).show();
-                return true;
-            } else if (id == R.id.nav_cart) {
-                startActivity(new Intent(ProfileActivity.this, CartActivity.class));
-                return true;
-            } else if (id == R.id.nav_profile) {
-                return true; // already here
-            }
-            return false;
-        });
     }
 
     private void logout() {
@@ -137,10 +125,16 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void openLogin() {
-        Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
-        intent.setFlags(
-                Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK
+        Intent intent = new Intent(
+                ProfileActivity.this,
+                LoginActivity.class
         );
+
+        intent.setFlags(
+                Intent.FLAG_ACTIVITY_NEW_TASK
+                        | Intent.FLAG_ACTIVITY_CLEAR_TASK
+        );
+
         startActivity(intent);
     }
 }

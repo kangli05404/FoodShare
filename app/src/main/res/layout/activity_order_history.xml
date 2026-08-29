@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F7F2"
+    android:orientation="vertical">
+
+    <!-- Main Content Area -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <!-- Header -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="16dp"
+            android:text="My Order"
+            android:textColor="#333333"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <!-- Tabs Bar -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="4"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="12dp">
+
+            <TextView
+                android:id="@+id/tabUpcoming"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Upcoming"
+                android:textSize="13sp"
+                android:maxLines="1"
+                android:textColor="#888888" />
+
+            <TextView
+                android:id="@+id/tabReady"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="To Pickup"
+                android:textSize="13sp"
+                android:maxLines="1"
+                android:textColor="#888888" />
+
+            <TextView
+                android:id="@+id/tabCompleted"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Completed"
+                android:textSize="13sp"
+                android:maxLines="1"
+                android:textColor="#888888" />
+
+            <TextView
+                android:id="@+id/tabCanceled"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Canceled"
+                android:textSize="13sp"
+                android:maxLines="1"
+                android:textColor="#888888" />
+        </LinearLayout>
+
+        <!-- Order List -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvOrderHistory"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+
+    <!-- Bottom Navigation Bar (Matches your Profile & Home setup) -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        app:itemIconTint="@color/bottom_nav_color"
+        app:itemTextColor="@color/bottom_nav_color"
+        app:labelVisibilityMode="labeled"
+        app:menu="@menu/bottom_nav_menu" />
+
+</LinearLayout>

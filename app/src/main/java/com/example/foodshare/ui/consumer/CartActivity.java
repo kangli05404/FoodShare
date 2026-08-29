@@ -3,16 +3,20 @@ package com.example.foodshare.ui.consumer;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.button.MaterialButton;
 import com.example.foodshare.R;
 import com.example.foodshare.database.CartDao;
 import com.example.foodshare.database.CartDatabase;
 import com.example.foodshare.database.CartItem;
 import com.example.foodshare.ui.consumer.adapter.CartAdapter;
+import com.example.foodshare.ui.orders.CheckoutActivity;
+import com.example.foodshare.ui.orders.OrderHistoryActivity;
 import com.example.foodshare.ui.profile.ProfileActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -25,6 +29,8 @@ public class CartActivity extends AppCompatActivity {
 
     private RecyclerView recyclerCart;
     private TextView textCartTotal;
+    private MaterialButton buttonCheckout;
+    private List<CartItem> currentCartItems;
     private CartAdapter adapter;
     private CartDao cartDao;
     private BottomNavigationView bottomNav;
@@ -37,12 +43,26 @@ public class CartActivity extends AppCompatActivity {
 
         recyclerCart = findViewById(R.id.recyclerCart);
         textCartTotal = findViewById(R.id.textCartTotal);
+        buttonCheckout = findViewById(R.id.buttonCheckout);
         bottomNav = findViewById(R.id.bottomNav);
 
         findViewById(R.id.buttonBack).setOnClickListener(v -> finish());
 
         cartDao = CartDatabase.getInstance(getApplicationContext()).cartDao();
         recyclerCart.setLayoutManager(new LinearLayoutManager(this));
+
+        // Checkout Button Click Listener
+        buttonCheckout.setOnClickListener(v -> {
+            if (currentCartItems == null || currentCartItems.isEmpty()) {
+                Toast.makeText(this, "Your cart is empty!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Launches CheckoutActivity directly without needing extra intent puts
+            // since CheckoutActivity queries the Room database directly!
+            Intent intent = new Intent(CartActivity.this, CheckoutActivity.class);
+            startActivity(intent);
+        });
 
         bottomNav.setSelectedItemId(R.id.nav_cart);
         bottomNav.setOnItemSelectedListener(item -> {
@@ -52,12 +72,15 @@ public class CartActivity extends AppCompatActivity {
                 finish();
                 return true;
             } else if (id == R.id.nav_orders) {
-                android.widget.Toast.makeText(this, "Order history coming soon", android.widget.Toast.LENGTH_SHORT).show();
+                // If your teammate added OrderHistoryActivity, you can point this to it:
+                startActivity(new Intent(CartActivity.this, OrderHistoryActivity.class));
+                finish();
                 return true;
             } else if (id == R.id.nav_cart) {
                 return true; // already here
             } else if (id == R.id.nav_profile) {
                 startActivity(new Intent(CartActivity.this, ProfileActivity.class));
+                finish();
                 return true;
             }
             return false;
@@ -69,6 +92,7 @@ public class CartActivity extends AppCompatActivity {
     private void loadCartItems() {
         executor.execute(() -> {
             List<CartItem> items = cartDao.getAllCartItems();
+            currentCartItems = items; // This populates the field and clears the warning
 
             runOnUiThread(() -> {
                 adapter = new CartAdapter(items, new CartAdapter.OnCartActionListener() {

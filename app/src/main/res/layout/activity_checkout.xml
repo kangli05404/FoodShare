@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F7F2">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <!-- Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/btnBack"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@android:drawable/ic_menu_revert" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="Checkout"
+                android:textColor="#333333"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Order Item Card -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="2dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="16dp"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:id="@+id/imageCheckoutItem"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/magic_box_01" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvItemName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Surprise Meal Box"
+                        android:textColor="#333333"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvVendorName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="FoodShare Partner"
+                        android:textColor="#666666"
+                        android:textSize="14sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tvItemPrice"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="RM 9.90"
+                            android:textColor="#333333"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvItemQuantity"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="x1"
+                            android:textColor="#666666" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Pickup Time -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Estimate Pick Up Time"
+            android:textColor="#333333"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvPickUpTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="6.00pm - 7.00pm"
+            android:textColor="#666666" />
+
+        <!-- Payment Method -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Payment Method"
+            android:textColor="#333333"
+            android:textStyle="bold" />
+
+        <RadioGroup
+            android:id="@+id/rgPaymentMethod"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp">
+
+            <RadioButton
+                android:id="@+id/rbTng"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="Touch 'n Go" />
+
+            <RadioButton
+                android:id="@+id/rbEbanking"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="E-Banking" />
+        </RadioGroup>
+
+        <!-- Pricing breakdown section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:orientation="vertical"
+            android:background="#FFFFFF"
+            android:padding="12dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="Subtotal:" android:textColor="#666666"/>
+                <TextView android:id="@+id/tvSubtotal" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="RM 0.00" android:textColor="#666666"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal">
+                <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="Discount:" android:textColor="#666666"/>
+                <TextView android:id="@+id/tvDiscount" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0%" android:textColor="#666666"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Totals -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Total Net Cost:"
+                android:textColor="#333333"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvFinalTotal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="RM 0.00"
+                android:textColor="#333333"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Confirm Button -->
+        <Button
+            android:id="@+id/btnConfirmOrder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:backgroundTint="#5A774A"
+            android:padding="16dp"
+            android:text="Confirm &amp; Pay"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+</ScrollView>

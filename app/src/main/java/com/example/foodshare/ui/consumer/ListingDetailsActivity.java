@@ -81,10 +81,11 @@ public class ListingDetailsActivity extends AppCompatActivity {
             executor.execute(() -> {
                 CartItem cartItem = new CartItem(
                         listing.getListingId(),
+                        listing.getVendorId(),
                         listing.getFoodName(),
                         listing.getOriginalPrice(),
                         1,
-                        listing.getImageName()
+                        listing.getImageUrl()
                 );
                 CartDatabase.getInstance(getApplicationContext())
                         .cartDao().insert(cartItem);
