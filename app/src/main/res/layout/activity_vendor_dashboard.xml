@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -39,30 +38,13 @@
                 android:textColor="@color/foodshare_text_secondary"
                 android:textSize="16sp" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/today_label"
-                    android:textColor="@color/foodshare_text_secondary"
-                    android:textSize="14sp" />
-
-                <TextView
-                    android:id="@+id/buttonViewReports"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/view_reports"
-                    android:textColor="@color/foodshare_green"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
+                android:text="@string/today_label"
+                android:textColor="@color/foodshare_text_secondary"
+                android:textSize="14sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -91,7 +73,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/active_listings"
+                            android:text="Listings"
                             android:textColor="@color/foodshare_text_secondary"
                             android:textSize="14sp" />
 
@@ -185,10 +167,11 @@
                             android:textSize="14sp" />
 
                         <TextView
+                            android:id="@+id/textTotalRevenue"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="6dp"
-                            android:text="RM 0"
+                            android:text="RM 0.00"
                             android:textColor="@color/foodshare_green"
                             android:textSize="20sp"
                             android:textStyle="bold" />
@@ -220,6 +203,7 @@
                             android:textSize="14sp" />
 
                         <TextView
+                            android:id="@+id/textTotalCustomers"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="6dp"
@@ -275,25 +259,26 @@
                 android:layout_width="1dp"
                 android:layout_height="1dp"
                 android:visibility="gone" />
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/buttonVendorOrders"
                 android:layout_width="1dp"
                 android:layout_height="1dp"
                 android:visibility="gone" />
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/buttonVendorProfile"
                 android:layout_width="1dp"
                 android:layout_height="1dp"
                 android:visibility="gone" />
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/buttonVendorLogout"
                 android:layout_width="1dp"
                 android:layout_height="1dp"
                 android:visibility="gone" />
-
         </LinearLayout>
     </ScrollView>
 
     <include layout="@layout/view_vendor_bottom_nav" />
-
 </LinearLayout>

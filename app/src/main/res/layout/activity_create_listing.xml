@@ -11,13 +11,11 @@
         android:orientation="vertical"
         android:padding="24dp">
 
-        <!-- Header with Back Button and Title -->
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
             <ImageButton
                 android:id="@+id/buttonBack"
@@ -25,35 +23,59 @@
                 android:layout_height="48dp"
                 android:background="@android:color/transparent"
                 android:contentDescription="@string/action_back"
-                android:src="@drawable/ic_back_dark"
-                android:scaleType="centerInside" />
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_back_dark" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="@string/create_listing_title"
+                android:text="Create Listing"
                 android:textColor="@color/foodshare_dark_green"
                 android:textSize="28sp"
                 android:textStyle="bold" />
-
         </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:text="@string/create_listing_subtitle"
+            android:text="Create a Magic Box listing"
             android:textColor="@color/foodshare_text_secondary"
             android:textSize="15sp" />
 
-        <!-- Rest of the layout remains the same -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:hint="Box Name">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editFoodName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textCapWords" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="Category"
+            app:endIconMode="dropdown_menu">
+
+            <AutoCompleteTextView
+                android:id="@+id/editCategory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="@string/magic_box_image_label"
+            android:layout_marginTop="20dp"
+            android:text="Food Image"
             android:textColor="@color/foodshare_text"
             android:textSize="15sp"
             android:textStyle="bold" />
@@ -76,10 +98,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@color/foodshare_light_green"
-                    android:contentDescription="@string/magic_box_image_label"
-                    android:scaleType="fitCenter"
-                    android:adjustViewBounds="false" />
-
+                    android:contentDescription="Listing image"
+                    android:scaleType="fitCenter" />
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.button.MaterialButton
@@ -87,114 +107,61 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-            android:text="@string/upload_food_image"
+                android:text="Upload Food Image"
                 android:textColor="@color/foodshare_green"
-                android:textSize="15sp"
                 app:backgroundTint="@color/foodshare_surface"
                 app:cornerRadius="14dp"
                 app:strokeColor="@color/foodshare_green"
                 app:strokeWidth="1dp" />
-
         </FrameLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
-            android:text="@string/description_label"
-            android:textColor="@color/foodshare_text"
-            android:textSize="15sp"
-            android:textStyle="bold" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            app:boxBackgroundMode="outline"
-            app:boxCornerRadiusBottomEnd="12dp"
-            app:boxCornerRadiusBottomStart="12dp"
-            app:boxCornerRadiusTopEnd="12dp"
-            app:boxCornerRadiusTopStart="12dp"
-            app:boxStrokeColor="@color/foodshare_green">
+            android:layout_marginTop="18dp"
+            android:hint="Description">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="top"
-                android:hint="@string/description_hint"
                 android:inputType="textMultiLine"
-                android:minLines="3"
-                android:textSize="15sp" />
-
+                android:minLines="3" />
         </com.google.android.material.textfield.TextInputLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
-            android:text="@string/price_label"
-            android:textColor="@color/foodshare_text"
-            android:textSize="15sp"
-            android:textStyle="bold" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            app:boxBackgroundMode="outline"
-            app:boxCornerRadiusBottomEnd="12dp"
-            app:boxCornerRadiusBottomStart="12dp"
-            app:boxCornerRadiusTopEnd="12dp"
-            app:boxCornerRadiusTopStart="12dp"
-            app:boxStrokeColor="@color/foodshare_green"
+            android:layout_marginTop="12dp"
+            android:hint="Original Price (RM)"
             app:prefixText="RM ">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editPrice"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/price_hint"
-                android:inputType="numberDecimal"
-                android:textSize="15sp" />
-
+                android:inputType="numberDecimal" />
         </com.google.android.material.textfield.TextInputLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
-            android:text="@string/quantity_label"
-            android:textColor="@color/foodshare_text"
-            android:textSize="15sp"
-            android:textStyle="bold" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            app:boxBackgroundMode="outline"
-            app:boxCornerRadiusBottomEnd="12dp"
-            app:boxCornerRadiusBottomStart="12dp"
-            app:boxCornerRadiusTopEnd="12dp"
-            app:boxCornerRadiusTopStart="12dp"
-            app:boxStrokeColor="@color/foodshare_green">
+            android:layout_marginTop="12dp"
+            android:hint="Quantity">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editQuantity"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/quantity_hint"
-                android:inputType="number"
-                android:textSize="15sp" />
-
+                android:inputType="number" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:text="@string/dynamic_pricing_title"
+            android:layout_marginTop="28dp"
+            android:text="Dynamic Pricing"
             android:textColor="@color/foodshare_dark_green"
             android:textSize="21sp"
             android:textStyle="bold" />
@@ -203,7 +170,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:text="@string/dynamic_pricing_subtitle"
+            android:text="Add continuous time ranges to control when this listing is available and its discount."
             android:textColor="@color/foodshare_text_secondary"
             android:textSize="14sp" />
 
@@ -211,44 +178,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="18dp"
-            android:text="@string/discount_period_label"
-            android:textColor="@color/foodshare_text"
-            android:textSize="15sp"
-            android:textStyle="bold" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/buttonDiscountStart"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:minHeight="52dp"
-            android:text="@string/select_discount_start"
-            android:textColor="@color/foodshare_green"
-            android:textSize="15sp"
-            app:backgroundTint="@color/foodshare_surface"
-            app:cornerRadius="14dp"
-            app:strokeColor="@color/foodshare_green"
-            app:strokeWidth="1dp" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/buttonDiscountEnd"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:minHeight="52dp"
-            android:text="@string/select_discount_end"
-            android:textColor="@color/foodshare_green"
-            android:textSize="15sp"
-            app:backgroundTint="@color/foodshare_surface"
-            app:cornerRadius="14dp"
-            app:strokeColor="@color/foodshare_green"
-            app:strokeWidth="1dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="22dp"
-            android:text="@string/discount_rules_label"
+            android:text="Discount Rules"
             android:textColor="@color/foodshare_text"
             android:textSize="16sp"
             android:textStyle="bold" />
@@ -258,17 +188,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/textNoDiscountRules"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/no_discount_rules"
-                android:textColor="@color/foodshare_text_secondary"
-                android:textSize="14sp" />
-
-        </LinearLayout>
+            android:orientation="vertical" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonAddDiscountRule"
@@ -276,9 +196,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:minHeight="52dp"
-            android:text="@string/add_discount_rule"
+            android:text="+ Add Discount Rule"
             android:textColor="@color/foodshare_green"
-            android:textSize="15sp"
             app:backgroundTint="@color/foodshare_surface"
             app:cornerRadius="14dp"
             app:strokeColor="@color/foodshare_green"
@@ -289,8 +208,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="28dp"
             android:layout_marginBottom="24dp"
-            android:orientation="horizontal"
-            android:weightSum="2">
+            android:orientation="horizontal">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/buttonCancel"
@@ -299,10 +217,8 @@
                 android:layout_marginEnd="8dp"
                 android:layout_weight="1"
                 android:minHeight="56dp"
-                android:text="@string/cancel"
+                android:text="Cancel"
                 android:textColor="@color/foodshare_text"
-                android:textSize="16sp"
-                android:textStyle="bold"
                 app:backgroundTint="@color/foodshare_surface"
                 app:cornerRadius="14dp"
                 app:strokeColor="@color/foodshare_outline"
@@ -315,15 +231,10 @@
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
                 android:minHeight="56dp"
-                android:text="@string/create_listing_button"
+                android:text="Create Listing"
                 android:textColor="@color/white"
-                android:textSize="16sp"
-                android:textStyle="bold"
                 app:backgroundTint="@color/foodshare_green"
                 app:cornerRadius="14dp" />
-
         </LinearLayout>
-
     </LinearLayout>
-
 </ScrollView>

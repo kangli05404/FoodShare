@@ -283,7 +283,6 @@ public class OrderTrackingActivity extends AppCompatActivity {
                     if (currentAvailable != null) {
                         long restoredQuantity = currentAvailable + purchasedQuantity;
                         transaction.update(listingRef, "availableQuantity", restoredQuantity);
-                        transaction.update(listingRef, "status", "ACTIVE");
                     }
                 }
             }

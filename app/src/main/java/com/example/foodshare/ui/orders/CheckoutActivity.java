@@ -16,8 +16,10 @@ import com.example.foodshare.R;
 import com.example.foodshare.database.CartDao;
 import com.example.foodshare.database.CartDatabase;
 import com.example.foodshare.database.CartItem;
+import com.example.foodshare.util.TimeUtils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -28,34 +30,24 @@ import java.util.Map;
 import java.util.concurrent.Executors;
 
 public class CheckoutActivity extends AppCompatActivity {
-
     private TextView tvItemName, tvVendorName, tvItemPrice, tvItemQuantity, tvSubtotal, tvDiscount, tvFinalTotal, tvPickUpTime;
     private ImageView ivCheckoutItem, btnBack;
     private RadioGroup rgPaymentMethod;
     private Button btnConfirmOrder;
-
     private CartDao cartDao;
     private FirebaseFirestore firestore;
 
-    private double subtotal = 0.0;
-    private double discountPercent = 0.0;
-    private double finalNetTotal = 0.0;
-    private String listingId = "";
-    private String vendorId = "";
-    private String selectedPaymentMethod = "Touch 'n Go";
-    private String calculatedPickupTime = "";
-
-    // Fields to save details into Firestore order document
-    private String savedItemName = "";
+    private double subtotal = 0, discountPercent = 0, finalNetTotal = 0;
+    private String listingId = "", vendorId = "", selectedPaymentMethod = "Touch 'n Go", calculatedPickupTime = "";
+    private String savedItemName = "", savedImageUrl = "";
     private int savedQuantity = 0;
-    private String savedImageUrl = "";
+    private boolean listingAvailableNow = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_checkout);
 
-        // Bind views
         tvItemName = findViewById(R.id.tvItemName);
         tvVendorName = findViewById(R.id.tvVendorName);
         tvItemPrice = findViewById(R.id.tvItemPrice);
@@ -72,108 +64,104 @@ public class CheckoutActivity extends AppCompatActivity {
         cartDao = CartDatabase.getInstance(getApplicationContext()).cartDao();
         firestore = FirebaseFirestore.getInstance();
 
-        btnBack.setOnClickListener(v -> finish());
+        btnBack.setOnClickListener(view -> finish());
 
         rgPaymentMethod.setOnCheckedChangeListener((group, checkedId) -> {
-            RadioButton rb = findViewById(checkedId);
-            if (rb != null) {
-                selectedPaymentMethod = rb.getText().toString();
-            }
+            RadioButton radioButton = findViewById(checkedId);
+            if (radioButton != null) selectedPaymentMethod = radioButton.getText().toString();
         });
 
-        // Generate dynamic pickup range (20 to 40 minutes from now)
         generateEstimatedPickupTime();
-
         loadCartAndFetchDiscount();
+        btnConfirmOrder.setOnClickListener(view -> createOrderInFirebase());
+    }
 
-        btnConfirmOrder.setOnClickListener(v -> createOrderInFirebase());
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (cartDao != null && firestore != null) loadCartAndFetchDiscount();
     }
 
     private void generateEstimatedPickupTime() {
-        Calendar startCalendar = Calendar.getInstance();
-        startCalendar.add(Calendar.MINUTE, 20); // 20 minutes from now
+        Calendar start = Calendar.getInstance();
+        Calendar end = Calendar.getInstance();
+        start.add(Calendar.MINUTE, 20);
+        end.add(Calendar.MINUTE, 40);
 
-        Calendar endCalendar = Calendar.getInstance();
-        endCalendar.add(Calendar.MINUTE, 40);  // 40 minutes from now
-
-        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a", Locale.getDefault());
-        String startTime = sdf.format(startCalendar.getTime());
-        String endTime = sdf.format(endCalendar.getTime());
-
-        calculatedPickupTime = startTime + " - " + endTime;
-
-        if (tvPickUpTime != null) {
-            tvPickUpTime.setText(calculatedPickupTime);
-        }
+        SimpleDateFormat format = new SimpleDateFormat("hh:mm a", Locale.getDefault());
+        calculatedPickupTime = format.format(start.getTime()) + " - " + format.format(end.getTime());
+        tvPickUpTime.setText(calculatedPickupTime);
     }
 
     private void loadCartAndFetchDiscount() {
         Executors.newSingleThreadExecutor().execute(() -> {
             List<CartItem> cartItems = cartDao.getAllCartItems();
 
-            if (cartItems != null && !cartItems.isEmpty()) {
-                CartItem firstItem = cartItems.get(0);
-                listingId = firstItem.listingId;
-                vendorId = firstItem.vendorId;
-
-                subtotal = 0.0;
-                int totalQuantity = 0;
-                for (CartItem item : cartItems) {
-                    subtotal += (item.price * item.quantity);
-                    totalQuantity += item.quantity;
-                }
-
-                savedItemName = firstItem.foodName;
-                savedQuantity = totalQuantity;
-                savedImageUrl = firstItem.imageUrl;
-
-                final double finalItemPrice = firstItem.price;
-
-                // Query Firebase for matching listing to get discountRules
-                if (listingId != null && !listingId.isEmpty()) {
-                    firestore.collection("listings").document(listingId)
-                            .get()
-                            .addOnSuccessListener(documentSnapshot -> {
-                                if (documentSnapshot.exists()) {
-                                    List<Map<String, Object>> rules = (List<Map<String, Object>>) documentSnapshot.get("discountRules");
-                                    if (rules != null && !rules.isEmpty()) {
-                                        Object percentObj = rules.get(0).get("discountPercent");
-                                        if (percentObj instanceof Number) {
-                                            discountPercent = ((Number) percentObj).doubleValue();
-                                        }
-                                    }
-                                }
-                                calculateAndDisplayTotals(savedItemName, finalItemPrice, savedQuantity, savedImageUrl);
-                            })
-                            .addOnFailureListener(e -> {
-                                calculateAndDisplayTotals(savedItemName, finalItemPrice, savedQuantity, savedImageUrl);
-                            });
-                } else {
-                    calculateAndDisplayTotals(savedItemName, finalItemPrice, savedQuantity, savedImageUrl);
-                }
+            if (cartItems == null || cartItems.isEmpty()) {
+                runOnUiThread(() -> btnConfirmOrder.setEnabled(false));
+                return;
             }
+
+            CartItem firstItem = cartItems.get(0);
+            listingId = firstItem.listingId;
+            vendorId = firstItem.vendorId;
+            subtotal = 0;
+            savedQuantity = 0;
+
+            for (CartItem item : cartItems) {
+                subtotal += item.price * item.quantity;
+                savedQuantity += item.quantity;
+            }
+
+            savedItemName = firstItem.foodName;
+            savedImageUrl = firstItem.imageUrl;
+            double itemPrice = firstItem.price;
+
+            firestore.collection("listings").document(listingId).get()
+                    .addOnSuccessListener(document -> {
+                        if (!document.exists()) {
+                            listingAvailableNow = false;
+                            updateCheckoutDisplay(itemPrice);
+                            return;
+                        }
+
+                        @SuppressWarnings("unchecked")
+                        List<Map<String, Object>> rules = (List<Map<String, Object>>) document.get("discountRules");
+
+                        Long availableQuantity = document.getLong("availableQuantity");
+                        if (availableQuantity == null) availableQuantity = document.getLong("quantity");
+
+                        discountPercent = TimeUtils.getCurrentDiscountPercent(rules);
+                        listingAvailableNow = TimeUtils.isWithinDiscountRules(rules)
+                                && availableQuantity != null
+                                && availableQuantity >= savedQuantity;
+
+                        updateCheckoutDisplay(itemPrice);
+                    })
+                    .addOnFailureListener(exception -> {
+                        listingAvailableNow = false;
+                        updateCheckoutDisplay(itemPrice);
+                    });
         });
     }
 
-    private void calculateAndDisplayTotals(String itemName, double itemPrice, int quantity, String imageUrl) {
-        double discountAmount = subtotal * (discountPercent / 100.0);
-        finalNetTotal = subtotal - discountAmount;
+    private void updateCheckoutDisplay(double itemPrice) {
+        finalNetTotal = subtotal - subtotal * (discountPercent / 100.0);
 
         runOnUiThread(() -> {
-            tvItemName.setText(itemName);
+            tvItemName.setText(savedItemName);
             tvItemPrice.setText(String.format(Locale.getDefault(), "RM %.2f", itemPrice));
-            tvItemQuantity.setText("x" + quantity);
-
+            tvItemQuantity.setText("x" + savedQuantity);
             tvSubtotal.setText(String.format(Locale.getDefault(), "RM %.2f", subtotal));
-            tvDiscount.setText(String.format(Locale.getDefault(), "%.0f%%", discountPercent));
+            tvDiscount.setText(TimeUtils.formatDiscount(discountPercent) + "%");
             tvFinalTotal.setText(String.format(Locale.getDefault(), "RM %.2f", finalNetTotal));
 
-            if (ivCheckoutItem != null && imageUrl != null && !imageUrl.isEmpty()) {
-                Glide.with(this)
-                        .load(imageUrl)
-                        .placeholder(R.drawable.magic_box_01)
-                        .into(ivCheckoutItem);
+            if (savedImageUrl != null && !savedImageUrl.isEmpty()) {
+                Glide.with(this).load(savedImageUrl).placeholder(R.drawable.magic_box_01).into(ivCheckoutItem);
             }
+
+            btnConfirmOrder.setEnabled(listingAvailableNow);
+            btnConfirmOrder.setText(listingAvailableNow ? "Confirm Order" : "Not Available");
         });
     }
 
@@ -183,76 +171,78 @@ public class CheckoutActivity extends AppCompatActivity {
             return;
         }
 
-        if (listingId == null || listingId.isEmpty()) {
-            Toast.makeText(this, "Error: Listing ID is missing.", Toast.LENGTH_SHORT).show();
+        if (listingId.isEmpty()) {
+            Toast.makeText(this, "Listing ID is missing.", Toast.LENGTH_SHORT).show();
             return;
         }
 
         btnConfirmOrder.setEnabled(false);
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
-        Map<String, Object> orderMap = new HashMap<>();
-        orderMap.put("userId", currentUserId);
-        orderMap.put("itemName", savedItemName);
-        orderMap.put("quantity", savedQuantity);
-        orderMap.put("imageUrl", savedImageUrl);
-        orderMap.put("payment", "Completed");
-        orderMap.put("paymentMethod", selectedPaymentMethod);
-        orderMap.put("subtotal", subtotal);
-        orderMap.put("discountPercent", discountPercent);
-        orderMap.put("totalNetPrice", finalNetTotal);
-        orderMap.put("listingId", listingId);
-        orderMap.put("vendorId", vendorId);
-        orderMap.put("status", "Upcoming");
-        orderMap.put("pickUpTime", calculatedPickupTime);
-        orderMap.put("timestamp", com.google.firebase.firestore.FieldValue.serverTimestamp());
-
-        // Use a Firestore transaction to safely create the order and decrease the quantity at the same time
         firestore.runTransaction(transaction -> {
             com.google.firebase.firestore.DocumentReference listingRef = firestore.collection("listings").document(listingId);
-            com.google.firebase.firestore.DocumentSnapshot listingSnapshot = transaction.get(listingRef);
+            com.google.firebase.firestore.DocumentSnapshot listing = transaction.get(listingRef);
 
-            if (listingSnapshot.exists()) {
-                Long currentAvailable = listingSnapshot.getLong("availableQuantity");
-                if (currentAvailable == null) {
-                    currentAvailable = listingSnapshot.getLong("quantity"); // Fallback if availableQuantity isn't set
-                }
-
-                if (currentAvailable != null) {
-                    long newAvailable = currentAvailable - savedQuantity;
-                    if (newAvailable < 0) newAvailable = 0; // Prevent negative inventory
-
-                    // Update listing available quantity
-                    transaction.update(listingRef, "availableQuantity", newAvailable);
-
-                    // Optionally update status to SOLD_OUT if inventory hits 0
-                    if (newAvailable == 0) {
-                        transaction.update(listingRef, "status", "SOLD_OUT");
-                    }
-                }
+            if (!listing.exists()) {
+                throw new FirebaseFirestoreException("Listing no longer exists.", FirebaseFirestoreException.Code.NOT_FOUND);
             }
 
-            // Create the order document inside the same transaction
-            com.google.firebase.firestore.DocumentReference newOrderRef = firestore.collection("orders").document();
-            transaction.set(newOrderRef, orderMap);
+            @SuppressWarnings("unchecked")
+            List<Map<String, Object>> rules = (List<Map<String, Object>>) listing.get("discountRules");
 
-            return newOrderRef.getId();
+            if (!TimeUtils.isWithinDiscountRules(rules)) {
+                throw new FirebaseFirestoreException("This listing is not available at this time.", FirebaseFirestoreException.Code.ABORTED);
+            }
+
+            double currentDiscount = TimeUtils.getCurrentDiscountPercent(rules);
+
+            if (currentDiscount <= 0) {
+                throw new FirebaseFirestoreException("No active discount rule was found.", FirebaseFirestoreException.Code.ABORTED);
+            }
+
+            Long availableQuantity = listing.getLong("availableQuantity");
+            if (availableQuantity == null) availableQuantity = listing.getLong("quantity");
+
+            if (availableQuantity == null || availableQuantity < savedQuantity) {
+                throw new FirebaseFirestoreException("Not enough quantity available.", FirebaseFirestoreException.Code.ABORTED);
+            }
+
+            double currentFinalTotal = subtotal - subtotal * (currentDiscount / 100.0);
+            transaction.update(listingRef, "availableQuantity", availableQuantity - savedQuantity);
+
+            com.google.firebase.firestore.DocumentReference orderRef = firestore.collection("orders").document();
+
+            Map<String, Object> order = new HashMap<>();
+            order.put("userId", userId);
+            order.put("vendorId", vendorId);
+            order.put("listingId", listingId);
+            order.put("itemName", savedItemName);
+            order.put("quantity", savedQuantity);
+            order.put("imageUrl", savedImageUrl);
+            order.put("subtotal", subtotal);
+            order.put("discountPercent", currentDiscount);
+            order.put("totalNetPrice", currentFinalTotal);
+            order.put("payment", "Completed");
+            order.put("paymentMethod", selectedPaymentMethod);
+            order.put("status", "Upcoming");
+            order.put("pickUpTime", calculatedPickupTime);
+            order.put("timestamp", com.google.firebase.firestore.FieldValue.serverTimestamp());
+
+            transaction.set(orderRef, order);
+            return orderRef.getId();
         }).addOnSuccessListener(orderId -> {
-            Toast.makeText(CheckoutActivity.this, "Order placed successfully!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Order placed successfully!", Toast.LENGTH_SHORT).show();
+            Executors.newSingleThreadExecutor().execute(() -> cartDao.clearCart());
 
-            Executors.newSingleThreadExecutor().execute(() -> {
-                cartDao.clearCart();
-            });
-
-            Intent intent = new Intent(CheckoutActivity.this, OrderTrackingActivity.class);
+            Intent intent = new Intent(this, OrderTrackingActivity.class);
             intent.putExtra("ORDER_ID", orderId);
             intent.putExtra("FROM_CHECKOUT", true);
             startActivity(intent);
             finish();
-        }).addOnFailureListener(e -> {
+        }).addOnFailureListener(exception -> {
             btnConfirmOrder.setEnabled(true);
-            Toast.makeText(CheckoutActivity.this, "Failed to place order: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Unable to place order: " + exception.getMessage(), Toast.LENGTH_LONG).show();
+            loadCartAndFetchDiscount();
         });
     }
 }

@@ -18,7 +18,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class VendorDashboardFragment extends Fragment {
-
     private TextView textVendorWelcome;
     private TextView textActiveListings;
     private TextView textTodayOrders;
@@ -30,16 +29,20 @@ public class VendorDashboardFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.activity_vendor_dashboard, container, false);
+
         View oldNavigation = root.findViewById(R.id.vendorBottomNavigation);
+
         if (oldNavigation != null) {
             oldNavigation.setVisibility(View.GONE);
         }
+
         return root;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         firebaseAuth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
 
@@ -48,7 +51,7 @@ public class VendorDashboardFragment extends Fragment {
         textTodayOrders = view.findViewById(R.id.textTodayOrders);
 
         Button createListing = view.findViewById(R.id.buttonCreateListing);
-        createListing.setOnClickListener(v ->
+        createListing.setOnClickListener(view1 ->
                 startActivity(new Intent(requireContext(), CreateListingActivity.class)));
 
         loadDashboardData();
@@ -57,6 +60,7 @@ public class VendorDashboardFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
         if (textActiveListings != null) {
             loadDashboardData();
         }
@@ -70,35 +74,32 @@ public class VendorDashboardFragment extends Fragment {
 
         String vendorId = firebaseAuth.getCurrentUser().getUid();
         String email = firebaseAuth.getCurrentUser().getEmail();
+
         if (email != null && !email.isEmpty()) {
             String displayName = email.split("@")[0];
-            textVendorWelcome.setText(String.format(
-                    getString(R.string.welcome_message), displayName));
+            textVendorWelcome.setText(String.format(getString(R.string.welcome_message), displayName));
         }
 
         firestore.collection("listings")
                 .whereEqualTo("vendorId", vendorId)
-                .whereEqualTo("status", "ACTIVE")
                 .get()
-                .addOnSuccessListener(result -> textActiveListings.setText(
-                        String.valueOf(result.size())))
-                .addOnFailureListener(e -> {
+                .addOnSuccessListener(result -> textActiveListings.setText(String.valueOf(result.size())))
+                .addOnFailureListener(exception -> {
                     textActiveListings.setText("0");
+
                     if (isAdded()) {
-                        Toast.makeText(requireContext(), R.string.failed_to_load_listings,
-                                Toast.LENGTH_SHORT).show();
+                        Toast.makeText(requireContext(), R.string.failed_to_load_listings, Toast.LENGTH_SHORT).show();
                     }
                 });
 
         java.util.Calendar calendar = java.util.Calendar.getInstance();
-        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(
-                "yyyy-MM-dd", java.util.Locale.getDefault());
+        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault());
+
         firestore.collection("orders")
                 .whereEqualTo("vendorId", vendorId)
                 .whereEqualTo("createdDate", sdf.format(calendar.getTime()))
                 .get()
-                .addOnSuccessListener(result -> textTodayOrders.setText(
-                        String.valueOf(result.size())))
-                .addOnFailureListener(e -> textTodayOrders.setText("0"));
+                .addOnSuccessListener(result -> textTodayOrders.setText(String.valueOf(result.size())))
+                .addOnFailureListener(exception -> textTodayOrders.setText("0"));
     }
 }

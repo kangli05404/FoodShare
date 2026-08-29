@@ -8,36 +8,17 @@ public class Listing {
     private String listingId;
     private String vendorId;
     private String foodName;
+    private String category;
     private String description;
     private double originalPrice;
     private int quantity;
     private int availableQuantity;
     private String imageName;
     private String imageUrl;
-    private String discountStart;
-    private String discountEnd;
     private List<Map<String, Object>> discountRules;
-    private String status;
     private Date createdAt;
 
     public Listing() {}
-
-    public Listing(String vendorId, String foodName, String description,
-                   double originalPrice, int quantity, String imageName,
-                   String discountStart, String discountEnd,
-                   List<Map<String, Object>> discountRules) {
-        this.vendorId = vendorId;
-        this.foodName = foodName;
-        this.description = description;
-        this.originalPrice = originalPrice;
-        this.quantity = quantity;
-        this.availableQuantity = quantity;
-        this.imageName = imageName;
-        this.discountStart = discountStart;
-        this.discountEnd = discountEnd;
-        this.discountRules = discountRules;
-        this.status = "ACTIVE";
-    }
 
     public String getListingId() { return listingId; }
     public void setListingId(String listingId) { this.listingId = listingId; }
@@ -47,6 +28,9 @@ public class Listing {
 
     public String getFoodName() { return foodName; }
     public void setFoodName(String foodName) { this.foodName = foodName; }
+
+    public String getCategory() { return category; }
+    public void setCategory(String category) { this.category = category; }
 
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
@@ -66,17 +50,8 @@ public class Listing {
     public String getImageUrl() { return imageUrl; }
     public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 
-    public String getDiscountStart() { return discountStart; }
-    public void setDiscountStart(String discountStart) { this.discountStart = discountStart; }
-
-    public String getDiscountEnd() { return discountEnd; }
-    public void setDiscountEnd(String discountEnd) { this.discountEnd = discountEnd; }
-
     public List<Map<String, Object>> getDiscountRules() { return discountRules; }
     public void setDiscountRules(List<Map<String, Object>> discountRules) { this.discountRules = discountRules; }
-
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
 
     public Date getCreatedAt() { return createdAt; }
     public void setCreatedAt(Date createdAt) { this.createdAt = createdAt; }

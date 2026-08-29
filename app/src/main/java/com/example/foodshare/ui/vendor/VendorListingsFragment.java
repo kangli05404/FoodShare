@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.example.foodshare.R;
+import com.example.foodshare.util.TimeUtils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -26,140 +27,172 @@ import java.util.Locale;
 import java.util.Map;
 
 public class VendorListingsFragment extends Fragment {
-
     private LinearLayout layoutListings;
-    private TextView textEmptyListings;
-    private TextView textListingCount;
+    private TextView textEmptyListings, textListingCount;
     private FirebaseAuth firebaseAuth;
     private FirebaseFirestore firestore;
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable android.os.Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable android.os.Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.activity_manage_listings, container, false);
+
         View oldNavigation = root.findViewById(R.id.vendorBottomNavigation);
         if (oldNavigation != null) oldNavigation.setVisibility(View.GONE);
+
         ImageButton back = root.findViewById(R.id.buttonBack);
         if (back != null) back.setVisibility(View.GONE);
+
         return root;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable android.os.Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         firebaseAuth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
         layoutListings = view.findViewById(R.id.layoutListings);
         textEmptyListings = view.findViewById(R.id.textEmptyListings);
         textListingCount = view.findViewById(R.id.textListingCount);
-        loadListings();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (layoutListings != null) loadListings();
     }
 
     private void loadListings() {
         if (firebaseAuth.getCurrentUser() == null) return;
-        layoutListings.removeAllViews();
+
+        clearListingViews();
         textEmptyListings.setVisibility(View.GONE);
         textListingCount.setText("Loading...");
-        String vendorId = firebaseAuth.getCurrentUser().getUid();
+
         firestore.collection("listings")
-                .whereEqualTo("vendorId", vendorId)
+                .whereEqualTo("vendorId", firebaseAuth.getCurrentUser().getUid())
                 .orderBy("createdAt", Query.Direction.DESCENDING)
                 .get()
                 .addOnSuccessListener(result -> {
+                    clearListingViews();
                     List<DocumentSnapshot> listings = result.getDocuments();
-                    textListingCount.setText(listings.size() +
-                            (listings.size() == 1 ? " Listing" : " Listings"));
+
+                    textListingCount.setText(listings.size() + (listings.size() == 1 ? " Listing" : " Listings"));
+
                     if (listings.isEmpty()) {
                         textEmptyListings.setVisibility(View.VISIBLE);
-                    } else {
-                        for (DocumentSnapshot document : listings) addListingView(document);
+                        return;
                     }
+
+                    textEmptyListings.setVisibility(View.GONE);
+                    for (DocumentSnapshot document : listings) addListingView(document);
                 })
-                .addOnFailureListener(e -> {
+                .addOnFailureListener(exception -> {
+                    clearListingViews();
                     textListingCount.setText("0 Listings");
-                    textEmptyListings.setVisibility(View.VISIBLE);
                     textEmptyListings.setText("Failed to load listings.");
+                    textEmptyListings.setVisibility(View.VISIBLE);
                 });
     }
 
+    private void clearListingViews() {
+        while (layoutListings.getChildCount() > 1) layoutListings.removeViewAt(1);
+    }
+
     private void addListingView(DocumentSnapshot document) {
-        View listingView = LayoutInflater.from(requireContext())
-                .inflate(R.layout.item_listing, layoutListings, false);
+        View listingView = LayoutInflater.from(requireContext()).inflate(R.layout.item_listing, layoutListings, false);
+
         android.widget.ImageView image = listingView.findViewById(R.id.imageListing);
         TextView foodName = listingView.findViewById(R.id.textFoodName);
+        TextView category = listingView.findViewById(R.id.textCategory);
         TextView description = listingView.findViewById(R.id.textDescription);
         TextView price = listingView.findViewById(R.id.textPrice);
         TextView quantity = listingView.findViewById(R.id.textQuantity);
         TextView period = listingView.findViewById(R.id.textDiscountPeriod);
         TextView rules = listingView.findViewById(R.id.textDiscountRules);
-        TextView status = listingView.findViewById(R.id.textStatus);
         Button edit = listingView.findViewById(R.id.buttonEditListing);
         Button delete = listingView.findViewById(R.id.buttonDeleteListing);
 
         String id = document.getId();
         String name = stringValue(document, "foodName");
-        foodName.setText(name);
-        String details = stringValue(document, "description");
-        description.setText(details.isEmpty() ? "No description" : details);
-        price.setText(String.format(Locale.getDefault(), "RM %.2f", numberValue(document, "originalPrice")));
-        int total = intValue(document, "quantity");
-        quantity.setText("Available: " + intValue(document, "availableQuantity") + " / " + total);
-        String start = stringValue(document, "discountStart");
-        String end = stringValue(document, "discountEnd");
-        period.setText(start.isEmpty() || end.isEmpty() ? "Discount Period: Not set" :
-                "Discount Period: " + start + " - " + end);
-        rules.setText(discountRules(document));
-        String state = stringValue(document, "status");
-        status.setText(state.isEmpty() ? "UNKNOWN" : state);
+        String categoryValue = stringValue(document, "category");
 
-        edit.setOnClickListener(v -> {
+        foodName.setText(name.isEmpty() ? "Unnamed Box" : name);
+        category.setText(categoryValue.isEmpty() ? "Uncategorized" : categoryValue);
+        description.setText(stringValue(document, "description").isEmpty() ? "No description" : stringValue(document, "description"));
+        price.setText(String.format(Locale.getDefault(), "RM %.2f", numberValue(document, "originalPrice")));
+
+        int total = intValue(document, "quantity");
+        int available = intValue(document, "availableQuantity");
+        quantity.setText("Available: " + available + " / " + total);
+
+        List<Map<String, Object>> discountRules = getDiscountRules(document);
+        String start = TimeUtils.getScheduleStart(discountRules);
+        String end = TimeUtils.getScheduleEnd(discountRules);
+
+        period.setText(start.isEmpty() || end.isEmpty() ? "Availability: Not set" : "Availability: " + start + " - " + end);
+        rules.setText(formatDiscountRules(discountRules));
+
+        edit.setOnClickListener(view -> {
             Intent intent = new Intent(requireContext(), EditListingActivity.class);
             intent.putExtra("listingId", id);
             startActivity(intent);
         });
-        delete.setOnClickListener(v -> new AlertDialog.Builder(requireContext())
+
+        delete.setOnClickListener(view -> new AlertDialog.Builder(requireContext())
                 .setTitle("Delete Listing?")
                 .setMessage("Are you sure you want to delete \"" + name + "\"?")
                 .setNegativeButton("Cancel", null)
-                .setPositiveButton("Delete", (dialog, which) -> firestore.collection("listings")
-                        .document(id).delete().addOnSuccessListener(unused -> loadListings()))
+                .setPositiveButton("Delete", (dialog, which) ->
+                        firestore.collection("listings").document(id).delete().addOnSuccessListener(unused -> loadListings()))
                 .show());
 
         String imageUrl = stringValue(document, "imageUrl");
-        if (!imageUrl.isEmpty()) Glide.with(this).load(imageUrl)
-                .placeholder(R.drawable.magic_box_01).into(image);
+        if (!imageUrl.isEmpty()) Glide.with(this).load(imageUrl).placeholder(R.drawable.magic_box_01).into(image);
         else image.setImageResource(R.drawable.magic_box_01);
+
         layoutListings.addView(listingView);
     }
 
-    private String stringValue(DocumentSnapshot d, String field) {
-        String value = d.getString(field);
+    @SuppressWarnings("unchecked")
+    private List<Map<String, Object>> getDiscountRules(DocumentSnapshot document) {
+        return (List<Map<String, Object>>) document.get("discountRules");
+    }
+
+    private String formatDiscountRules(List<Map<String, Object>> values) {
+        if (values == null || values.isEmpty()) return "Discount Rules: None";
+
+        StringBuilder result = new StringBuilder("Discount Rules:");
+
+        for (Map<String, Object> value : values) {
+            result.append("\n")
+                    .append(value.get("startTime"))
+                    .append(" - ")
+                    .append(value.get("endTime"))
+                    .append(" : ")
+                    .append(TimeUtils.formatDiscount(((Number) value.get("discountPercent")).doubleValue()))
+                    .append("%");
+        }
+
+        return result.toString();
+    }
+
+    private String stringValue(DocumentSnapshot document, String field) {
+        String value = document.getString(field);
         return value == null ? "" : value;
     }
 
-    private double numberValue(DocumentSnapshot d, String field) {
-        Double decimal = d.getDouble(field);
+    private double numberValue(DocumentSnapshot document, String field) {
+        Double decimal = document.getDouble(field);
         if (decimal != null) return decimal;
-        Long whole = d.getLong(field);
+
+        Long whole = document.getLong(field);
         return whole == null ? 0 : whole.doubleValue();
     }
 
-    private int intValue(DocumentSnapshot d, String field) {
-        Long value = d.getLong(field);
+    private int intValue(DocumentSnapshot document, String field) {
+        Long value = document.getLong(field);
         return value == null ? 0 : value.intValue();
-    }
-
-    @SuppressWarnings("unchecked")
-    private String discountRules(DocumentSnapshot d) {
-        List<Map<String, Object>> values = (List<Map<String, Object>>) d.get("discountRules");
-        if (values == null || values.isEmpty()) return "Discount Rules: None";
-        StringBuilder result = new StringBuilder("Discount Rules:");
-        for (Map<String, Object> value : values) {
-            result.append("\n").append(String.valueOf(value.get("startTime")))
-                    .append(" - ").append(String.valueOf(value.get("endTime")))
-                    .append(" : ").append(String.valueOf(value.get("discountPercent"))).append("%");
-        }
-        return result.toString();
     }
 }
