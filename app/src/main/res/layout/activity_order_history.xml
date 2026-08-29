@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F7F2"
+    android:background="#FAF8F3"
     android:orientation="vertical">
 
     <!-- Main Content Area -->
@@ -24,12 +24,13 @@
             android:textSize="24sp"
             android:textStyle="bold" />
 
-        <!-- Tabs Bar -->
+        <!-- Tabs Bar with a distinct background shade -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:weightSum="4"
+            android:background="#E6EADE"
             android:paddingHorizontal="8dp"
             android:paddingVertical="12dp">
 
@@ -78,15 +79,31 @@
                 android:textColor="#888888" />
         </LinearLayout>
 
-        <!-- Order List -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvOrderHistory"
+        <!-- Order List & Empty State Container -->
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvOrderHistory"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <TextView
+                android:id="@+id/tvEmptyState"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="No orders found"
+                android:textSize="15sp"
+                android:textColor="#888888"
+                android:visibility="gone" />
+
+        </RelativeLayout>
 
     </LinearLayout>
 
-    <!-- Bottom Navigation Bar (Matches your Profile & Home setup) -->
+    <!-- Bottom Navigation Bar -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNav"
         android:layout_width="match_parent"

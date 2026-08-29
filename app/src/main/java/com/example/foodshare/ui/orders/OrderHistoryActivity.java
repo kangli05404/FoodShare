@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,7 +33,7 @@ public class OrderHistoryActivity extends AppCompatActivity {
     private OrderHistoryAdapter adapter;
     private List<DocumentSnapshot> orderList;
 
-    private TextView tabUpcoming, tabReady, tabCompleted, tabCanceled;
+    private TextView tabUpcoming, tabReady, tabCompleted, tabCanceled, tvEmptyState;
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
     private BottomNavigationView bottomNav;
@@ -46,7 +47,7 @@ public class OrderHistoryActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         tabUpcoming = findViewById(R.id.tabUpcoming);
-        tabReady = findViewById(R.id.tabReady); // New tab binding
+        tabReady = findViewById(R.id.tabReady);
         tabCompleted = findViewById(R.id.tabCompleted);
         tabCanceled = findViewById(R.id.tabCanceled);
         bottomNav = findViewById(R.id.bottomNav);
@@ -57,6 +58,10 @@ public class OrderHistoryActivity extends AppCompatActivity {
         orderList = new ArrayList<>();
         adapter = new OrderHistoryAdapter(orderList);
         rvOrderHistory.setAdapter(adapter);
+
+        // Dynamically find or handle empty state text view if you added it to your layout,
+        // or safely check to prevent crashes if it hasn't been added to XML yet.
+        tvEmptyState = findViewById(R.id.tvEmptyState);
 
         tabUpcoming.setOnClickListener(v -> selectTab("UPCOMING"));
         tabReady.setOnClickListener(v -> selectTab("READY"));
@@ -98,16 +103,16 @@ public class OrderHistoryActivity extends AppCompatActivity {
 
         if ("UPCOMING".equals(category)) {
             setActiveTabStyle(tabUpcoming);
-            fetchOrders(Arrays.asList("PENDING", "CONFIRMED", "Upcoming"));
+            fetchOrders(Arrays.asList("PENDING", "CONFIRMED", "Upcoming"), "No upcoming orders");
         } else if ("READY".equals(category)) {
             setActiveTabStyle(tabReady);
-            fetchOrders(Arrays.asList("READY", "Ready to Pick Up", "READY_FOR_PICKUP"));
+            fetchOrders(Arrays.asList("READY", "Ready to Pick Up", "READY_FOR_PICKUP"), "No orders ready for pickup");
         } else if ("COMPLETED".equals(category)) {
             setActiveTabStyle(tabCompleted);
-            fetchOrders(Arrays.asList("COMPLETED"));
+            fetchOrders(Arrays.asList("COMPLETED"), "No completed orders");
         } else if ("CANCELED".equals(category)) {
             setActiveTabStyle(tabCanceled);
-            fetchOrders(Arrays.asList("CANCELED"));
+            fetchOrders(Arrays.asList("CANCELED"), "No canceled orders");
         }
     }
 
@@ -120,12 +125,12 @@ public class OrderHistoryActivity extends AppCompatActivity {
 
     private void setActiveTabStyle(TextView tab) {
         if (tab != null) {
-            tab.setTextColor(Color.parseColor("#5A774A"));
+            tab.setTextColor(Color.parseColor("#5A774A")); // Matching your app's green theme tint
             tab.setTypeface(null, Typeface.BOLD);
         }
     }
 
-    private void fetchOrders(List<String> statuses) {
+    private void fetchOrders(List<String> statuses, String emptyMessage) {
         String userId = (mAuth.getCurrentUser() != null) ? mAuth.getCurrentUser().getUid() : "GUEST_USER";
 
         db.collection("orders")
@@ -151,6 +156,18 @@ public class OrderHistoryActivity extends AppCompatActivity {
 
                     orderList.addAll(fetchedDocs);
                     adapter.notifyDataSetChanged();
+
+                    // Handle visibility of empty state message if the TextView exists in your layout
+                    if (tvEmptyState != null) {
+                        if (orderList.isEmpty()) {
+                            tvEmptyState.setText(emptyMessage);
+                            tvEmptyState.setVisibility(View.VISIBLE);
+                            rvOrderHistory.setVisibility(View.GONE);
+                        } else {
+                            tvEmptyState.setVisibility(View.GONE);
+                            rvOrderHistory.setVisibility(View.VISIBLE);
+                        }
+                    }
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(this, "Error loading orders: " + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -160,7 +177,6 @@ public class OrderHistoryActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // Refresh current selected tab on return
         if (tabReady != null && tabReady.getTypeface() != null && tabReady.getTypeface().isBold()) {
             selectTab("READY");
         } else if (tabCompleted != null && tabCompleted.getTypeface() != null && tabCompleted.getTypeface().isBold()) {
