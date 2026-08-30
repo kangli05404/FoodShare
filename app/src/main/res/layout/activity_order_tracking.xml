@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/consumer_milky"
-    android:fillViewport="true">
+    android:background="@color/consumer_milky">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="190dp"
+        android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -264,44 +269,51 @@
         </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Action Buttons -->
+    </LinearLayout>
+    </ScrollView>
+
+    <!-- These actions stay fixed at the bottom; only the order information scrolls. -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@color/consumer_milky"
+        android:elevation="6dp"
+        android:orientation="vertical"
+        android:paddingStart="24dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="24dp"
+        android:paddingBottom="12dp">
+
         <Button
             android:id="@+id/btnTrackMap"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
+            android:layout_height="48dp"
             android:backgroundTint="@color/consumer_lime"
-            android:minHeight="48dp"
-            android:padding="12dp"
             android:text="Open Store Map"
             android:textColor="@android:color/white"
             android:textSize="16sp" />
 
-        <!-- Cancel Order Button -->
         <Button
             android:id="@+id/btnCancelOrder"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="8dp"
             android:backgroundTint="#D32F2F"
-            android:minHeight="48dp"
-            android:padding="12dp"
             android:text="Cancel Order"
             android:textColor="@android:color/white"
             android:textSize="16sp"
             android:visibility="gone" />
 
-        <!-- Back to Home / Orders Button -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonBackToOrders"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="8dp"
             android:text="Back to Orders"
             android:textColor="@color/foodshare_dark_green"
             app:backgroundTint="@color/consumer_lime"
             app:cornerRadius="14dp"
             app:strokeWidth="0dp" />
-
     </LinearLayout>
-</ScrollView>
+</FrameLayout>
