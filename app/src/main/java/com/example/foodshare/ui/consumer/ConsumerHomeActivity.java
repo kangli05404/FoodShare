@@ -19,7 +19,6 @@ import com.example.foodshare.R;
 import com.example.foodshare.model.Listing;
 import com.example.foodshare.ui.consumer.adapter.ListingAdapter;
 import com.example.foodshare.ui.orders.OrderHistoryActivity;
-import com.example.foodshare.ui.profile.ProfileActivity;
 import com.example.foodshare.util.TimeUtils;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.textfield.TextInputEditText;
@@ -126,16 +125,19 @@ public class ConsumerHomeActivity extends AppCompatActivity {
 
             if (id == R.id.nav_orders) {
                 startActivity(new Intent(this, OrderHistoryActivity.class));
+                bottomNav.post(() -> bottomNav.setSelectedItemId(R.id.nav_home));
                 return true;
             }
 
             if (id == R.id.nav_cart) {
                 startActivity(new Intent(this, CartActivity.class));
+                bottomNav.post(() -> bottomNav.setSelectedItemId(R.id.nav_home));
                 return true;
             }
 
             if (id == R.id.nav_profile) {
-                startActivity(new Intent(this, ProfileActivity.class));
+                startActivity(new Intent(this, ConsumerProfileActivity.class)); // see Problem 2 below
+                bottomNav.post(() -> bottomNav.setSelectedItemId(R.id.nav_home));
                 return true;
             }
 

@@ -46,8 +46,6 @@ public class CartActivity extends AppCompatActivity {
         buttonCheckout = findViewById(R.id.buttonCheckout);
         bottomNav = findViewById(R.id.bottomNav);
 
-        findViewById(R.id.buttonBack).setOnClickListener(v -> finish());
-
         cartDao = CartDatabase.getInstance(getApplicationContext()).cartDao();
         recyclerCart.setLayoutManager(new LinearLayoutManager(this));
 
@@ -72,15 +70,14 @@ public class CartActivity extends AppCompatActivity {
                 finish();
                 return true;
             } else if (id == R.id.nav_orders) {
-                // If your teammate added OrderHistoryActivity, you can point this to it:
                 startActivity(new Intent(CartActivity.this, OrderHistoryActivity.class));
-                finish();
+                bottomNav.post(() -> bottomNav.setSelectedItemId(R.id.nav_cart));
                 return true;
             } else if (id == R.id.nav_cart) {
-                return true; // already here
+                return true;
             } else if (id == R.id.nav_profile) {
-                startActivity(new Intent(CartActivity.this, ProfileActivity.class));
-                finish();
+                startActivity(new Intent(CartActivity.this, ConsumerProfileActivity.class));
+                bottomNav.post(() -> bottomNav.setSelectedItemId(R.id.nav_cart));
                 return true;
             }
             return false;

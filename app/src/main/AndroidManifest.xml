@@ -44,6 +44,9 @@
         <activity
             android:name=".ui.vendor.StoreLocationActivity"
             android:exported="false" />
+        <activity
+            android:name=".ui.consumer.ConsumerProfileActivity"
+            android:exported="false" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
