@@ -11,6 +11,7 @@ import com.bumptech.glide.Glide;
 import com.example.foodshare.R;
 import com.example.foodshare.database.CartDatabase;
 import com.example.foodshare.database.CartItem;
+import com.example.foodshare.database.CartDao;
 import com.example.foodshare.model.Listing;
 import com.example.foodshare.util.TimeUtils;
 import com.google.android.material.button.MaterialButton;
@@ -22,6 +23,7 @@ import java.util.concurrent.Executors;
 
 public class ListingDetailsActivity extends AppCompatActivity {
     private TextView textFoodName, textDescription, textPrice, textQuantity, textDiscountPeriod;
+    private TextView textToolbarTitle;
     private ImageView imageListingDetail;
     private MaterialButton buttonAddToCart;
     private FirebaseFirestore db;
@@ -32,6 +34,7 @@ public class ListingDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_listing_details);
+        findViewById(R.id.buttonBack).setOnClickListener(v -> finish());
 
         textFoodName = findViewById(R.id.textFoodName);
         textDescription = findViewById(R.id.textDescription);
@@ -40,6 +43,7 @@ public class ListingDetailsActivity extends AppCompatActivity {
         textDiscountPeriod = findViewById(R.id.textDiscountPeriod);
         imageListingDetail = findViewById(R.id.imageListingDetail);
         buttonAddToCart = findViewById(R.id.buttonAddToCart);
+        textToolbarTitle = findViewById(R.id.textToolbarTitle);
         db = FirebaseFirestore.getInstance();
 
         listingId = getIntent().getStringExtra("listingId");
@@ -83,6 +87,7 @@ public class ListingDetailsActivity extends AppCompatActivity {
         textFoodName.setText(listing.getFoodName());
         textDescription.setText(listing.getDescription());
         textQuantity.setText(String.format(Locale.getDefault(), "Available: %d", listing.getAvailableQuantity()));
+        textToolbarTitle.setText(listing.getFoodName());
 
         double discount = TimeUtils.getCurrentDiscountPercent(listing.getDiscountRules());
         double currentPrice = TimeUtils.calculateDiscountedPrice(listing.getOriginalPrice(), discount);
@@ -139,17 +144,27 @@ public class ListingDetailsActivity extends AppCompatActivity {
                         return;
                     }
 
-                    executor.execute(() -> {
-                        CartItem cartItem = new CartItem(
-                                listing.getListingId(),
-                                listing.getVendorId(),
-                                listing.getFoodName(),
-                                listing.getOriginalPrice(),
-                                1,
-                                listing.getImageUrl()
-                        );
+                    double discountAtAddTime = TimeUtils.getCurrentDiscountPercent(listing.getDiscountRules());
+                    double priceToStore = TimeUtils.calculateDiscountedPrice(listing.getOriginalPrice(), discountAtAddTime);
 
-                        CartDatabase.getInstance(getApplicationContext()).cartDao().insert(cartItem);
+                    executor.execute(() -> {
+                        CartDao cartDao = CartDatabase.getInstance(getApplicationContext()).cartDao();
+                        CartItem existing = cartDao.getByListingId(listing.getListingId());
+
+                        if (existing != null) {
+                            existing.quantity += 1;
+                            cartDao.update(existing);
+                        } else {
+                            CartItem newItem = new CartItem(
+                                    listing.getListingId(),
+                                    listing.getVendorId(),
+                                    listing.getFoodName(),
+                                    priceToStore,
+                                    1,
+                                    listing.getImageUrl()
+                            );
+                            cartDao.insert(newItem);
+                        }
                         runOnUiThread(() -> Toast.makeText(this, "Added to cart", Toast.LENGTH_SHORT).show());
                     });
                 });

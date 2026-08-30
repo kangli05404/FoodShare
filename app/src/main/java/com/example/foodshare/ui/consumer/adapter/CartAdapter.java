@@ -4,11 +4,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.foodshare.R;
 import com.example.foodshare.database.CartItem;
 
@@ -20,6 +22,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
     public interface OnCartActionListener {
         void onIncrease(CartItem item);
         void onDecrease(CartItem item);
+        void onItemClick(CartItem item);
     }
 
     private final List<CartItem> cartItems;
@@ -46,8 +49,18 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
         holder.textPrice.setText(String.format(Locale.getDefault(), "RM %.2f", item.price));
         holder.textQuantity.setText(String.valueOf(item.quantity));
 
+        if (item.imageUrl != null && !item.imageUrl.isEmpty()) {
+            Glide.with(holder.itemView.getContext())
+                    .load(item.imageUrl)
+                    .placeholder(R.drawable.magic_box_01)
+                    .into(holder.imageCartItem);
+        } else {
+            holder.imageCartItem.setImageResource(R.drawable.magic_box_01);
+        }
+
         holder.buttonIncrease.setOnClickListener(v -> listener.onIncrease(item));
         holder.buttonDecrease.setOnClickListener(v -> listener.onDecrease(item));
+        holder.itemView.setOnClickListener(v -> listener.onItemClick(item));
     }
 
     @Override
@@ -56,11 +69,13 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
     }
 
     static class CartViewHolder extends RecyclerView.ViewHolder {
+        ImageView imageCartItem;
         TextView textFoodName, textPrice, textQuantity;
         ImageButton buttonIncrease, buttonDecrease;
 
         public CartViewHolder(@NonNull View itemView) {
             super(itemView);
+            imageCartItem = itemView.findViewById(R.id.imageCartItem);
             textFoodName = itemView.findViewById(R.id.textCartFoodName);
             textPrice = itemView.findViewById(R.id.textCartPrice);
             textQuantity = itemView.findViewById(R.id.textCartQuantity);

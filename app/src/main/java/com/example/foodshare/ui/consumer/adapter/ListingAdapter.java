@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide;
 import com.example.foodshare.R;
 import com.example.foodshare.database.CartDatabase;
 import com.example.foodshare.database.CartItem;
+import com.example.foodshare.database.CartDao;
 import com.example.foodshare.model.Listing;
 import com.example.foodshare.util.TimeUtils;
 import com.google.android.material.button.MaterialButton;
@@ -31,6 +32,8 @@ public class ListingAdapter extends RecyclerView.Adapter<ListingAdapter.ListingV
     private final Context context;
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final OnListingClickListener clickListener;
+    private String currentQuery = "";
+    private String currentCategory = "All";
 
     public interface OnListingClickListener {
         void onListingClicked(Listing listing);
@@ -43,31 +46,45 @@ public class ListingAdapter extends RecyclerView.Adapter<ListingAdapter.ListingV
         this.clickListener = clickListener;
     }
 
-    public void updateFullList(List<Listing> newList) {
-        listingsFull.clear();
-        listingsFull.addAll(newList);
+    public void setSearchQuery(String query) {
+        this.currentQuery = query == null ? "" : query;
+        applyFilters();
     }
 
-    public void filter(String query) {
+    public void setCategoryFilter(String category) {
+        this.currentCategory = category == null ? "All" : category;
+        applyFilters();
+    }
+
+    private void applyFilters() {
         listings.clear();
 
-        if (query == null || query.trim().isEmpty()) {
-            listings.addAll(listingsFull);
-        } else {
-            String lowerQuery = query.toLowerCase(Locale.getDefault()).trim();
+        String lowerQuery = currentQuery.toLowerCase(Locale.getDefault()).trim();
+        boolean categoryIsAll = currentCategory.equalsIgnoreCase("All");
 
-            for (Listing listing : listingsFull) {
-                String foodName = listing.getFoodName();
-                String category = listing.getCategory();
+        for (Listing listing : listingsFull) {
+            String foodName = listing.getFoodName();
+            String category = listing.getCategory();
 
-                boolean nameMatch = foodName != null && foodName.toLowerCase(Locale.getDefault()).contains(lowerQuery);
-                boolean categoryMatch = category != null && category.toLowerCase(Locale.getDefault()).contains(lowerQuery);
+            boolean matchesQuery = lowerQuery.isEmpty()
+                    || (foodName != null && foodName.toLowerCase(Locale.getDefault()).contains(lowerQuery));
 
-                if (nameMatch || categoryMatch) listings.add(listing);
+            boolean matchesCategory = categoryIsAll
+                    || (category != null && category.equalsIgnoreCase(currentCategory));
+
+            if (matchesQuery && matchesCategory) {
+                listings.add(listing);
             }
         }
 
         notifyDataSetChanged();
+    }
+
+    // Call this whenever fresh listings arrive from Firestore, so filters re-apply to new data
+    public void updateFullList(List<Listing> newList) {
+        listingsFull.clear();
+        listingsFull.addAll(newList);
+        applyFilters();
     }
 
     @NonNull
@@ -125,17 +142,27 @@ public class ListingAdapter extends RecyclerView.Adapter<ListingAdapter.ListingV
                 return;
             }
 
-            executor.execute(() -> {
-                CartItem item = new CartItem(
-                        listing.getListingId(),
-                        listing.getVendorId(),
-                        listing.getFoodName(),
-                        listing.getOriginalPrice(),
-                        1,
-                        listing.getImageUrl()
-                );
+            double discountAtAddTime = TimeUtils.getCurrentDiscountPercent(listing.getDiscountRules());
+            double priceToStore = TimeUtils.calculateDiscountedPrice(listing.getOriginalPrice(), discountAtAddTime);
 
-                CartDatabase.getInstance(context.getApplicationContext()).cartDao().insert(item);
+            executor.execute(() -> {
+                CartDao cartDao = CartDatabase.getInstance(context.getApplicationContext()).cartDao();
+                CartItem existing = cartDao.getByListingId(listing.getListingId());
+
+                if (existing != null) {
+                    existing.quantity += 1;
+                    cartDao.update(existing);
+                } else {
+                    CartItem newItem = new CartItem(
+                            listing.getListingId(),
+                            listing.getVendorId(),
+                            listing.getFoodName(),
+                            priceToStore,
+                            1,
+                            listing.getImageUrl()
+                    );
+                    cartDao.insert(newItem);
+                }
             });
 
             Toast.makeText(context, "Added to cart", Toast.LENGTH_SHORT).show();

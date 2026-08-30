@@ -26,6 +26,8 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.android.material.chip.ChipGroup;
+import com.google.android.material.chip.Chip;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +42,35 @@ public class ConsumerHomeActivity extends AppCompatActivity {
     private final List<Listing> allListings = new ArrayList<>();
     private final List<Listing> displayedListings = new ArrayList<>();
     private final Handler timeHandler = new Handler(Looper.getMainLooper());
+    private ChipGroup chipGroupCategories;
+    private String selectedCategory = "All";
 
+    private static final String[] CATEGORIES = {
+            "All",
+            "Vegetarian",
+            "Bakery & Pastry",
+            "Rice & Noodles",
+            "Meat",
+            "Seafood",
+            "Dessert & Snacks",
+            "Drinks",
+            "Mixed Food",
+            "Halal"
+    };
+
+    private void setupCategoryChips() {
+        for (String category : CATEGORIES) {
+            Chip chip = new Chip(this);
+            chip.setText(category);
+            chip.setCheckable(true);
+            chip.setChecked(category.equals(selectedCategory));
+            chip.setOnClickListener(v -> {
+                selectedCategory = category;
+                adapter.setCategoryFilter(category);
+            });
+            chipGroupCategories.addView(chip);
+        }
+    }
     private final Runnable timeRefresh = new Runnable() {
         @Override
         public void run() {
@@ -72,13 +102,16 @@ public class ConsumerHomeActivity extends AppCompatActivity {
 
         recyclerListings.setAdapter(adapter);
 
+        chipGroupCategories = findViewById(R.id.chipGroupCategories);
+        setupCategoryChips();
+
         editSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                adapter.filter(s.toString());
+                adapter.setSearchQuery(s.toString());
             }
 
             @Override
@@ -93,7 +126,6 @@ public class ConsumerHomeActivity extends AppCompatActivity {
 
             if (id == R.id.nav_orders) {
                 startActivity(new Intent(this, OrderHistoryActivity.class));
-                finish();
                 return true;
             }
 
@@ -161,10 +193,7 @@ public class ConsumerHomeActivity extends AppCompatActivity {
                 availableListings.add(listing);
             }
         }
-
         adapter.updateFullList(availableListings);
-        String search = editSearch.getText() == null ? "" : editSearch.getText().toString();
-        adapter.filter(search);
     }
 
     @Override

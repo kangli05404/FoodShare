@@ -111,6 +111,12 @@ public class CartActivity extends AppCompatActivity {
                             deleteItem(item);
                         }
                     }
+                    @Override
+                    public void onItemClick(CartItem item) {
+                        Intent intent = new Intent(CartActivity.this, ListingDetailsActivity.class);
+                        intent.putExtra("listingId", item.listingId);
+                        startActivity(intent);
+                    }
                 });
                 recyclerCart.setAdapter(adapter);
                 calculateTotal(items);
