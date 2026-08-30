@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/foodshare_cream"
+    android:background="@color/consumer_milky"
     android:fillViewport="true">
 
     <FrameLayout
@@ -14,7 +14,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="300dp"
-            android:background="@drawable/bg_login_header" />
+            android:background="@drawable/bg_auth_header" />
 
         <!-- Back button -->
         <ImageButton
@@ -82,8 +82,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/hint_full_name"
-                app:boxStrokeColor="@color/foodshare_green"
-                app:hintTextColor="@color/foodshare_green">
+                app:boxStrokeColor="@color/consumer_lime"
+                app:hintTextColor="@color/consumer_lime">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editTextName"
@@ -102,8 +102,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
                 android:hint="@string/hint_email"
-                app:boxStrokeColor="@color/foodshare_green"
-                app:hintTextColor="@color/foodshare_green">
+                app:boxStrokeColor="@color/consumer_lime"
+                app:hintTextColor="@color/consumer_lime">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editTextEmail"
@@ -122,8 +122,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
                 android:hint="@string/hint_phone"
-                app:boxStrokeColor="@color/foodshare_green"
-                app:hintTextColor="@color/foodshare_green">
+                app:boxStrokeColor="@color/consumer_lime"
+                app:hintTextColor="@color/consumer_lime">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editTextPhone"
@@ -142,9 +142,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
                 android:hint="@string/hint_password"
-                app:boxStrokeColor="@color/foodshare_green"
+                app:boxStrokeColor="@color/consumer_lime"
                 app:endIconMode="password_toggle"
-                app:hintTextColor="@color/foodshare_green">
+                app:hintTextColor="@color/consumer_lime">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editTextPassword"
@@ -163,9 +163,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
                 android:hint="@string/hint_confirm_password"
-                app:boxStrokeColor="@color/foodshare_green"
+                app:boxStrokeColor="@color/consumer_lime"
                 app:endIconMode="password_toggle"
-                app:hintTextColor="@color/foodshare_green">
+                app:hintTextColor="@color/consumer_lime">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editTextConfirmPassword"
@@ -199,7 +199,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:buttonTint="@color/foodshare_green"
+                    android:buttonTint="@color/consumer_lime"
                     android:checked="true"
                     android:text="@string/role_consumer"
                     android:textColor="@color/foodshare_text" />
@@ -209,7 +209,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:buttonTint="@color/foodshare_green"
+                    android:buttonTint="@color/consumer_lime"
                     android:text="@string/role_vendor"
                     android:textColor="@color/foodshare_text" />
 
@@ -222,7 +222,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="12dp"
-                android:indeterminateTint="@color/foodshare_green"
+                android:indeterminateTint="@color/consumer_lime"
                 android:visibility="gone" />
 
             <!-- Create account button -->
@@ -235,7 +235,7 @@
                 android:textColor="@color/white"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                app:backgroundTint="@color/foodshare_green"
+                app:backgroundTint="@color/consumer_lime"
                 app:cornerRadius="16dp" />
 
         </LinearLayout>

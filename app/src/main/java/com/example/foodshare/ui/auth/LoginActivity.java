@@ -18,7 +18,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import com.example.foodshare.ui.consumer.ConsumerHomeActivity;
+import com.example.foodshare.ui.consumer.ConsumerMainActivity;
 import com.example.foodshare.ui.vendor.VendorMainActivity;
 
 public class LoginActivity extends AppCompatActivity {
@@ -224,7 +224,7 @@ public class LoginActivity extends AppCompatActivity {
         if ("CONSUMER".equalsIgnoreCase(role)) {
             intent = new Intent(
                     LoginActivity.this,
-                    ConsumerHomeActivity.class
+                    ConsumerMainActivity.class
             );
         } else if ("VENDOR".equalsIgnoreCase(role)) {
             intent = new Intent(

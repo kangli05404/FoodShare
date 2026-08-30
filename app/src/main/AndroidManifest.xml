@@ -33,6 +33,9 @@
             android:name=".ui.consumer.ConsumerHomeActivity"
             android:exported="false" />
         <activity
+            android:name=".ui.consumer.ConsumerMainActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.consumer.CartActivity"
             android:exported="false" />
         <activity

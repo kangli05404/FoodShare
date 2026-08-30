@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.foodshare.R;
 import com.example.foodshare.database.CartItem;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
 import java.util.Locale;
@@ -48,6 +49,25 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
         holder.textFoodName.setText(item.foodName);
         holder.textPrice.setText(String.format(Locale.getDefault(), "RM %.2f", item.price));
         holder.textQuantity.setText(String.valueOf(item.quantity));
+        holder.textVendorName.setText("FoodShare Partner");
+        holder.itemView.setTag(item.id);
+
+        if (item.vendorId != null && !item.vendorId.isEmpty()) {
+            FirebaseFirestore.getInstance()
+                    .collection("users")
+                    .document(item.vendorId)
+                    .get()
+                    .addOnSuccessListener(document -> {
+                        Object boundItemId = holder.itemView.getTag();
+                        if (!(boundItemId instanceof Integer) || (Integer) boundItemId != item.id) {
+                            return;
+                        }
+                        String vendorName = document.getString("name");
+                        holder.textVendorName.setText(
+                                vendorName == null || vendorName.isEmpty()
+                                        ? "FoodShare Partner" : vendorName);
+                    });
+        }
 
         if (item.imageUrl != null && !item.imageUrl.isEmpty()) {
             Glide.with(holder.itemView.getContext())
@@ -70,13 +90,14 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
 
     static class CartViewHolder extends RecyclerView.ViewHolder {
         ImageView imageCartItem;
-        TextView textFoodName, textPrice, textQuantity;
-        ImageButton buttonIncrease, buttonDecrease;
+        TextView textFoodName, textVendorName, textPrice, textQuantity, buttonDecrease;
+        ImageButton buttonIncrease;
 
         public CartViewHolder(@NonNull View itemView) {
             super(itemView);
             imageCartItem = itemView.findViewById(R.id.imageCartItem);
             textFoodName = itemView.findViewById(R.id.textCartFoodName);
+            textVendorName = itemView.findViewById(R.id.textCartVendorName);
             textPrice = itemView.findViewById(R.id.textCartPrice);
             textQuantity = itemView.findViewById(R.id.textCartQuantity);
             buttonIncrease = itemView.findViewById(R.id.buttonIncrease);

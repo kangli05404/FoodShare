@@ -13,8 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.example.foodshare.R;
-import com.example.foodshare.ui.consumer.CartActivity;
-import com.example.foodshare.ui.consumer.ConsumerHomeActivity;
+import com.example.foodshare.ui.consumer.ConsumerMainActivity;
 import com.example.foodshare.ui.vendor.StoreLocationActivity;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -25,7 +24,7 @@ import java.util.Locale;
 
 public class OrderTrackingActivity extends AppCompatActivity {
 
-    private TextView tvItemName, tvQuantity, tvSubtotal, tvDiscount, tvFinalTotal, tvOrderTime, tvPaymentMethod, tvPaymentStatus;
+    private TextView tvItemName, tvVendorName, tvRestaurantLocation, tvQuantity, tvSubtotal, tvDiscount, tvFinalTotal, tvOrderTime, tvPaymentMethod, tvPaymentStatus;
     private ImageView ivOrderImage, btnBack;
     private Button buttonBackToOrders, btnTrackMap, btnCancelOrder;
 
@@ -40,6 +39,8 @@ public class OrderTrackingActivity extends AppCompatActivity {
 
         // Bind views
         tvItemName = findViewById(R.id.tvItemName);
+        tvVendorName = findViewById(R.id.tvVendorName);
+        tvRestaurantLocation = findViewById(R.id.tvRestaurantLocation);
         tvQuantity = findViewById(R.id.tvQuantity);
         tvSubtotal = findViewById(R.id.tvSubtotal);
         tvDiscount = findViewById(R.id.tvDiscount);
@@ -75,7 +76,8 @@ public class OrderTrackingActivity extends AppCompatActivity {
         if (btnBack != null) {
             btnBack.setOnClickListener(v -> {
                 if (fromCheckout) {
-                    Intent intent = new Intent(OrderTrackingActivity.this, CartActivity.class);
+                    Intent intent = new Intent(OrderTrackingActivity.this, ConsumerMainActivity.class);
+                    intent.putExtra(ConsumerMainActivity.EXTRA_SELECTED_TAB, R.id.nav_cart);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
                     finish();
@@ -90,7 +92,8 @@ public class OrderTrackingActivity extends AppCompatActivity {
             if (fromCheckout) {
                 buttonBackToOrders.setText("Back to Home");
                 buttonBackToOrders.setOnClickListener(v -> {
-                    Intent intent = new Intent(OrderTrackingActivity.this, ConsumerHomeActivity.class);
+                    Intent intent = new Intent(OrderTrackingActivity.this, ConsumerMainActivity.class);
+                    intent.putExtra(ConsumerMainActivity.EXTRA_SELECTED_TAB, R.id.nav_home);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
                     finish();
@@ -191,13 +194,21 @@ public class OrderTrackingActivity extends AppCompatActivity {
         db.collection("users").document(vendorId).get()
                 .addOnSuccessListener(userDoc -> {
                     if (userDoc.exists()) {
+                        String vendorName = userDoc.getString("name");
+                        if (tvVendorName != null) {
+                            tvVendorName.setText(vendorName == null || vendorName.isEmpty()
+                                    ? "FoodShare Partner" : vendorName);
+                        }
                         Double lat = userDoc.getDouble("storeLatitude");
                         Double lng = userDoc.getDouble("storeLongitude");
                         String address = userDoc.getString("storeAddress");
+                        if (tvRestaurantLocation != null && address != null && !address.isEmpty()) {
+                            tvRestaurantLocation.setText("📍 " + address);
+                        }
 
                         if (lat != null && lng != null && address != null && btnTrackMap != null) {
                             runOnUiThread(() -> {
-                                btnTrackMap.setText("📍 " + address);
+                                btnTrackMap.setText("Open Store Map");
                                 btnTrackMap.setEnabled(true);
                                 btnTrackMap.setOnClickListener(v -> openMapLocation(lat, lng, address));
                             });

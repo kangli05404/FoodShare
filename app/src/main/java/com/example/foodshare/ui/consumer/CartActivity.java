@@ -16,7 +16,6 @@ import com.example.foodshare.database.CartDatabase;
 import com.example.foodshare.database.CartItem;
 import com.example.foodshare.ui.consumer.adapter.CartAdapter;
 import com.example.foodshare.ui.orders.CheckoutActivity;
-import com.example.foodshare.ui.orders.OrderHistoryActivity;
 import com.example.foodshare.ui.profile.ProfileActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -66,18 +65,24 @@ public class CartActivity extends AppCompatActivity {
         bottomNav.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
             if (id == R.id.nav_home) {
-                startActivity(new Intent(CartActivity.this, ConsumerHomeActivity.class));
+                Intent intent = new Intent(CartActivity.this, ConsumerMainActivity.class);
+                intent.putExtra(ConsumerMainActivity.EXTRA_SELECTED_TAB, R.id.nav_home);
+                startActivity(intent);
                 finish();
                 return true;
             } else if (id == R.id.nav_orders) {
-                startActivity(new Intent(CartActivity.this, OrderHistoryActivity.class));
-                bottomNav.post(() -> bottomNav.setSelectedItemId(R.id.nav_cart));
+                Intent intent = new Intent(CartActivity.this, ConsumerMainActivity.class);
+                intent.putExtra(ConsumerMainActivity.EXTRA_SELECTED_TAB, R.id.nav_orders);
+                startActivity(intent);
+                finish();
                 return true;
             } else if (id == R.id.nav_cart) {
                 return true;
             } else if (id == R.id.nav_profile) {
-                startActivity(new Intent(CartActivity.this, ConsumerProfileActivity.class));
-                bottomNav.post(() -> bottomNav.setSelectedItemId(R.id.nav_cart));
+                Intent intent = new Intent(CartActivity.this, ConsumerMainActivity.class);
+                intent.putExtra(ConsumerMainActivity.EXTRA_SELECTED_TAB, R.id.nav_profile);
+                startActivity(intent);
+                finish();
                 return true;
             }
             return false;

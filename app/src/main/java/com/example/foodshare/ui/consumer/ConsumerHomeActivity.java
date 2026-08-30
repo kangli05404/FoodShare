@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.foodshare.R;
 import com.example.foodshare.model.Listing;
 import com.example.foodshare.ui.consumer.adapter.ListingAdapter;
-import com.example.foodshare.ui.orders.OrderHistoryActivity;
 import com.example.foodshare.util.TimeUtils;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.textfield.TextInputEditText;
@@ -83,9 +82,6 @@ public class ConsumerHomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_consumer_home);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
         recyclerListings = findViewById(R.id.recyclerListings);
         editSearch = findViewById(R.id.editSearch);
         bottomNav = findViewById(R.id.bottomNav);
@@ -124,20 +120,26 @@ public class ConsumerHomeActivity extends AppCompatActivity {
             if (id == R.id.nav_home) return true;
 
             if (id == R.id.nav_orders) {
-                startActivity(new Intent(this, OrderHistoryActivity.class));
-                bottomNav.post(() -> bottomNav.setSelectedItemId(R.id.nav_home));
+                Intent intent = new Intent(this, ConsumerMainActivity.class);
+                intent.putExtra(ConsumerMainActivity.EXTRA_SELECTED_TAB, R.id.nav_orders);
+                startActivity(intent);
+                finish();
                 return true;
             }
 
             if (id == R.id.nav_cart) {
-                startActivity(new Intent(this, CartActivity.class));
-                bottomNav.post(() -> bottomNav.setSelectedItemId(R.id.nav_home));
+                Intent intent = new Intent(this, ConsumerMainActivity.class);
+                intent.putExtra(ConsumerMainActivity.EXTRA_SELECTED_TAB, R.id.nav_cart);
+                startActivity(intent);
+                finish();
                 return true;
             }
 
             if (id == R.id.nav_profile) {
-                startActivity(new Intent(this, ConsumerProfileActivity.class)); // see Problem 2 below
-                bottomNav.post(() -> bottomNav.setSelectedItemId(R.id.nav_home));
+                Intent intent = new Intent(this, ConsumerMainActivity.class);
+                intent.putExtra(ConsumerMainActivity.EXTRA_SELECTED_TAB, R.id.nav_profile);
+                startActivity(intent);
+                finish();
                 return true;
             }
 
@@ -207,7 +209,9 @@ public class ConsumerHomeActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_cart) {
-            startActivity(new Intent(this, CartActivity.class));
+            Intent intent = new Intent(this, ConsumerMainActivity.class);
+            intent.putExtra(ConsumerMainActivity.EXTRA_SELECTED_TAB, R.id.nav_cart);
+            startActivity(intent);
             return true;
         }
 

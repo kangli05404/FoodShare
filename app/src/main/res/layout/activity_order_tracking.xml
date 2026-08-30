@@ -3,14 +3,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="#F5F7F2"
+    android:background="@color/consumer_milky"
     android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="24dp">
+        android:paddingStart="24dp"
+        android:paddingTop="20dp"
+        android:paddingEnd="24dp"
+        android:paddingBottom="24dp">
 
         <!-- Top Bar with Back Button and Header -->
         <LinearLayout
@@ -20,31 +23,45 @@
             android:orientation="horizontal"
             android:paddingBottom="16dp">
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/btnBack"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="Back"
-                android:src="@android:drawable/ic_menu_revert" />
+                android:padding="8dp"
+                android:src="@drawable/ic_arrow_back"
+                android:tint="@color/foodshare_dark_green" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:text="Order Details"
-                android:textColor="#333333"
+                android:textColor="@color/foodshare_text"
                 android:textSize="22sp"
                 android:textStyle="bold" />
         </LinearLayout>
 
         <!-- Order Summary Card -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:minHeight="440dp"
+            app:cardBackgroundColor="@color/foodshare_surface"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="3dp"
+            app:strokeColor="@color/consumer_lime"
+            app:strokeWidth="1dp">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/white"
-            android:elevation="2dp"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:paddingStart="24dp"
+            android:paddingTop="30dp"
+            android:paddingEnd="24dp"
+            android:paddingBottom="30dp">
 
             <!-- Item Row -->
             <LinearLayout
@@ -55,8 +72,8 @@
 
                 <ImageView
                     android:id="@+id/ivOrderImage"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
+                    android:layout_width="104dp"
+                    android:layout_height="104dp"
                     android:background="#E0E0E0"
                     android:scaleType="centerCrop"
                     android:src="@drawable/magic_box_01" />
@@ -73,9 +90,30 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Food Name"
-                        android:textColor="#333333"
-                        android:textSize="16sp"
+                        android:textColor="@color/foodshare_text"
+                        android:textSize="18sp"
                         android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvVendorName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:text="FoodShare Partner"
+                        android:textColor="@color/foodshare_dark_green"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvRestaurantLocation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:text="📍 Restaurant location unavailable"
+                        android:textColor="@color/foodshare_text_secondary"
+                        android:textSize="13sp" />
 
                     <TextView
                         android:id="@+id/tvQuantity"
@@ -83,7 +121,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
                         android:text="x1"
-                        android:textColor="#666666"
+                        android:textColor="@color/foodshare_text_secondary"
                         android:textSize="14sp" />
 
                     <TextView
@@ -92,7 +130,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
                         android:text="Time Ordered: --:--"
-                        android:textColor="#888888"
+                        android:textColor="@color/foodshare_text_secondary"
                         android:textSize="12sp" />
                 </LinearLayout>
             </LinearLayout>
@@ -100,8 +138,8 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginTop="22dp"
+                android:layout_marginBottom="22dp"
                 android:background="#E0E0E0" />
 
             <!-- Price Breakdown -->
@@ -116,14 +154,14 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Subtotal"
-                    android:textColor="#666666" />
+                    android:textColor="@color/foodshare_text_secondary" />
 
                 <TextView
                     android:id="@+id/tvSubtotal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="RM 0.00"
-                    android:textColor="#333333" />
+                    android:textColor="@color/foodshare_text" />
             </LinearLayout>
 
             <LinearLayout
@@ -137,14 +175,14 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Discount Applied"
-                    android:textColor="#666666" />
+                    android:textColor="@color/foodshare_text_secondary" />
 
                 <TextView
                     android:id="@+id/tvDiscount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="0%"
-                    android:textColor="#5A774A"
+                    android:textColor="@color/consumer_lime"
                     android:textStyle="bold" />
             </LinearLayout>
 
@@ -159,14 +197,14 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Payment Method"
-                    android:textColor="#666666" />
+                    android:textColor="@color/foodshare_text_secondary" />
 
                 <TextView
                     android:id="@+id/tvPaymentMethod"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Touch 'n Go"
-                    android:textColor="#333333" />
+                    android:textColor="@color/foodshare_text" />
             </LinearLayout>
 
             <LinearLayout
@@ -180,14 +218,14 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Payment Status"
-                    android:textColor="#666666" />
+                    android:textColor="@color/foodshare_text_secondary" />
 
                 <TextView
                     android:id="@+id/tvPaymentStatus"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Completed"
-                    android:textColor="#5A774A"
+                    android:textColor="@color/consumer_lime"
                     android:textStyle="bold" />
             </LinearLayout>
 
@@ -224,16 +262,18 @@
             </LinearLayout>
 
         </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
         <!-- Action Buttons -->
         <Button
             android:id="@+id/btnTrackMap"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:backgroundTint="#5A774A"
-            android:padding="16dp"
-            android:text="Open Map Location"
+            android:layout_marginTop="18dp"
+            android:backgroundTint="@color/consumer_lime"
+            android:minHeight="48dp"
+            android:padding="12dp"
+            android:text="Open Store Map"
             android:textColor="@android:color/white"
             android:textSize="16sp" />
 
@@ -244,7 +284,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:backgroundTint="#D32F2F"
-            android:padding="16dp"
+            android:minHeight="48dp"
+            android:padding="12dp"
             android:text="Cancel Order"
             android:textColor="@android:color/white"
             android:textSize="16sp"
@@ -253,14 +294,14 @@
         <!-- Back to Home / Orders Button -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonBackToOrders"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="match_parent"
-            android:layout_height="54dp"
+            android:layout_height="48dp"
             android:layout_marginTop="12dp"
             android:text="Back to Orders"
-            android:textColor="#5A774A"
+            android:textColor="@color/foodshare_dark_green"
+            app:backgroundTint="@color/consumer_lime"
             app:cornerRadius="14dp"
-            app:strokeColor="#5A774A" />
+            app:strokeWidth="0dp" />
 
     </LinearLayout>
 </ScrollView>

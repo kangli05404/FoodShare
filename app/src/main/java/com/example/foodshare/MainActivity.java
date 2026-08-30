@@ -7,7 +7,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.foodshare.ui.auth.LoginActivity;
-import com.example.foodshare.ui.consumer.ConsumerHomeActivity;
+import com.example.foodshare.ui.consumer.ConsumerMainActivity;
 import com.example.foodshare.ui.vendor.VendorMainActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         if ("CONSUMER".equalsIgnoreCase(role)) {
             intent = new Intent(
                     MainActivity.this,
-                    ConsumerHomeActivity.class
+                    ConsumerMainActivity.class
             );
         } else if ("VENDOR".equalsIgnoreCase(role)) {
             intent = new Intent(

@@ -146,14 +146,16 @@ public class CheckoutActivity extends AppCompatActivity {
     }
 
     private void updateCheckoutDisplay(double itemPrice) {
-        finalNetTotal = subtotal - subtotal * (discountPercent / 100.0);
+        // CartItem.price is already the discounted price captured when the item
+        // was added, so do not deduct the offer a second time at checkout.
+        finalNetTotal = subtotal;
 
         runOnUiThread(() -> {
             tvItemName.setText(savedItemName);
             tvItemPrice.setText(String.format(Locale.getDefault(), "RM %.2f", itemPrice));
             tvItemQuantity.setText("x" + savedQuantity);
             tvSubtotal.setText(String.format(Locale.getDefault(), "RM %.2f", subtotal));
-            tvDiscount.setText(TimeUtils.formatDiscount(discountPercent) + "%");
+            tvDiscount.setText("Included in price");
             tvFinalTotal.setText(String.format(Locale.getDefault(), "RM %.2f", finalNetTotal));
 
             if (savedImageUrl != null && !savedImageUrl.isEmpty()) {
@@ -207,7 +209,8 @@ public class CheckoutActivity extends AppCompatActivity {
                 throw new FirebaseFirestoreException("Not enough quantity available.", FirebaseFirestoreException.Code.ABORTED);
             }
 
-            double currentFinalTotal = subtotal - subtotal * (currentDiscount / 100.0);
+            // The cart subtotal already contains the active offer price.
+            double currentFinalTotal = subtotal;
             transaction.update(listingRef, "availableQuantity", availableQuantity - savedQuantity);
 
             com.google.firebase.firestore.DocumentReference orderRef = firestore.collection("orders").document();
@@ -220,6 +223,8 @@ public class CheckoutActivity extends AppCompatActivity {
             order.put("quantity", savedQuantity);
             order.put("imageUrl", savedImageUrl);
             order.put("subtotal", subtotal);
+            // Keep the percentage for order history display; the amount is not
+            // deducted again because the cart price is already discounted.
             order.put("discountPercent", currentDiscount);
             order.put("totalNetPrice", currentFinalTotal);
             order.put("payment", "Completed");

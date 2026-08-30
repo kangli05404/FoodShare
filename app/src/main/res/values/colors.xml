@@ -15,4 +15,9 @@
     <color name="white">#FFFFFF</color>
     <color name="foodshare_background">#FFF8F5F0</color>
 
+    <!-- Consumer UI palette: bright lime accents with dark-green text -->
+    <color name="consumer_lime">#8BD000</color>
+    <color name="consumer_lime_light">#DFF5B8</color>
+    <color name="consumer_milky">#FFF8EA</color>
+
 </resources>

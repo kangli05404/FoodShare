@@ -18,7 +18,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.foodshare.R;
 import com.example.foodshare.model.User;
 import com.example.foodshare.ui.auth.LoginActivity;
-import com.example.foodshare.ui.orders.OrderHistoryActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
@@ -46,18 +45,24 @@ public class ConsumerProfileActivity extends AppCompatActivity {
         bottomNav.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
             if (id == R.id.nav_home) {
-                startActivity(new Intent(this, ConsumerHomeActivity.class));
+                Intent intent = new Intent(this, ConsumerMainActivity.class);
+                intent.putExtra(ConsumerMainActivity.EXTRA_SELECTED_TAB, R.id.nav_home);
+                startActivity(intent);
                 finish();
                 return true;
             }
             if (id == R.id.nav_orders) {
-                startActivity(new Intent(this, OrderHistoryActivity.class));
-                bottomNav.post(() -> bottomNav.setSelectedItemId(R.id.nav_profile));
+                Intent intent = new Intent(this, ConsumerMainActivity.class);
+                intent.putExtra(ConsumerMainActivity.EXTRA_SELECTED_TAB, R.id.nav_orders);
+                startActivity(intent);
+                finish();
                 return true;
             }
             if (id == R.id.nav_cart) {
-                startActivity(new Intent(this, CartActivity.class));
-                bottomNav.post(() -> bottomNav.setSelectedItemId(R.id.nav_profile));
+                Intent intent = new Intent(this, ConsumerMainActivity.class);
+                intent.putExtra(ConsumerMainActivity.EXTRA_SELECTED_TAB, R.id.nav_cart);
+                startActivity(intent);
+                finish();
                 return true;
             }
             if (id == R.id.nav_profile) return true;

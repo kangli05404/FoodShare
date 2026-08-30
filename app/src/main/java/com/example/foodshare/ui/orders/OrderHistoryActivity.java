@@ -1,8 +1,6 @@
 package com.example.foodshare.ui.orders;
 
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -13,10 +11,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.foodshare.R;
-import com.example.foodshare.ui.consumer.CartActivity;
-import com.example.foodshare.ui.consumer.ConsumerHomeActivity;
-import com.example.foodshare.ui.profile.ProfileActivity;
+import com.example.foodshare.ui.consumer.ConsumerMainActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -33,7 +30,8 @@ public class OrderHistoryActivity extends AppCompatActivity {
     private OrderHistoryAdapter adapter;
     private List<DocumentSnapshot> orderList;
 
-    private TextView tabUpcoming, tabReady, tabCompleted, tabCanceled, tvEmptyState;
+    private TabLayout tabsOrders;
+    private TextView tvEmptyState;
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
     private BottomNavigationView bottomNav;
@@ -46,10 +44,11 @@ public class OrderHistoryActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
 
-        tabUpcoming = findViewById(R.id.tabUpcoming);
-        tabReady = findViewById(R.id.tabReady);
-        tabCompleted = findViewById(R.id.tabCompleted);
-        tabCanceled = findViewById(R.id.tabCanceled);
+        tabsOrders = findViewById(R.id.tabsOrders);
+        tabsOrders.addTab(tabsOrders.newTab().setText("Upcoming"));
+        tabsOrders.addTab(tabsOrders.newTab().setText("To Pickup"));
+        tabsOrders.addTab(tabsOrders.newTab().setText("Completed"));
+        tabsOrders.addTab(tabsOrders.newTab().setText("Canceled"));
         bottomNav = findViewById(R.id.bottomNav);
 
         rvOrderHistory = findViewById(R.id.rvOrderHistory);
@@ -63,10 +62,11 @@ public class OrderHistoryActivity extends AppCompatActivity {
         // or safely check to prevent crashes if it hasn't been added to XML yet.
         tvEmptyState = findViewById(R.id.tvEmptyState);
 
-        tabUpcoming.setOnClickListener(v -> selectTab("UPCOMING"));
-        tabReady.setOnClickListener(v -> selectTab("READY"));
-        tabCompleted.setOnClickListener(v -> selectTab("COMPLETED"));
-        tabCanceled.setOnClickListener(v -> selectTab("CANCELED"));
+        tabsOrders.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override public void onTabSelected(TabLayout.Tab tab) { selectTab(tab.getPosition()); }
+            @Override public void onTabUnselected(TabLayout.Tab tab) { }
+            @Override public void onTabReselected(TabLayout.Tab tab) { selectTab(tab.getPosition()); }
+        });
 
         // Setup Bottom Navigation mapping
         if (bottomNav != null) {
@@ -74,17 +74,23 @@ public class OrderHistoryActivity extends AppCompatActivity {
             bottomNav.setOnItemSelectedListener(item -> {
                 int id = item.getItemId();
                 if (id == R.id.nav_home) {
-                    startActivity(new Intent(this, ConsumerHomeActivity.class));
+                    Intent intent = new Intent(this, ConsumerMainActivity.class);
+                    intent.putExtra(ConsumerMainActivity.EXTRA_SELECTED_TAB, R.id.nav_home);
+                    startActivity(intent);
                     finish();
                     return true;
                 } else if (id == R.id.nav_orders) {
                     return true;
                 } else if (id == R.id.nav_cart) {
-                    startActivity(new Intent(this, CartActivity.class));
+                    Intent intent = new Intent(this, ConsumerMainActivity.class);
+                    intent.putExtra(ConsumerMainActivity.EXTRA_SELECTED_TAB, R.id.nav_cart);
+                    startActivity(intent);
                     finish();
                     return true;
                 } else if (id == R.id.nav_profile) {
-                    startActivity(new Intent(this, ProfileActivity.class));
+                    Intent intent = new Intent(this, ConsumerMainActivity.class);
+                    intent.putExtra(ConsumerMainActivity.EXTRA_SELECTED_TAB, R.id.nav_profile);
+                    startActivity(intent);
                     finish();
                     return true;
                 }
@@ -96,37 +102,26 @@ public class OrderHistoryActivity extends AppCompatActivity {
     }
 
     private void selectTab(String category) {
-        resetTabStyle(tabUpcoming);
-        resetTabStyle(tabReady);
-        resetTabStyle(tabCompleted);
-        resetTabStyle(tabCanceled);
-
         if ("UPCOMING".equals(category)) {
-            setActiveTabStyle(tabUpcoming);
             fetchOrders(Arrays.asList("PENDING", "CONFIRMED", "Upcoming"), "No upcoming orders");
         } else if ("READY".equals(category)) {
-            setActiveTabStyle(tabReady);
             fetchOrders(Arrays.asList("READY", "Ready to Pick Up", "READY_FOR_PICKUP"), "No orders ready for pickup");
         } else if ("COMPLETED".equals(category)) {
-            setActiveTabStyle(tabCompleted);
             fetchOrders(Arrays.asList("COMPLETED"), "No completed orders");
         } else if ("CANCELED".equals(category)) {
-            setActiveTabStyle(tabCanceled);
             fetchOrders(Arrays.asList("CANCELED"), "No canceled orders");
         }
     }
 
-    private void resetTabStyle(TextView tab) {
-        if (tab != null) {
-            tab.setTextColor(Color.parseColor("#888888"));
-            tab.setTypeface(null, Typeface.NORMAL);
-        }
-    }
-
-    private void setActiveTabStyle(TextView tab) {
-        if (tab != null) {
-            tab.setTextColor(Color.parseColor("#5A774A")); // Matching your app's green theme tint
-            tab.setTypeface(null, Typeface.BOLD);
+    private void selectTab(int position) {
+        if (position == 1) {
+            selectTab("READY");
+        } else if (position == 2) {
+            selectTab("COMPLETED");
+        } else if (position == 3) {
+            selectTab("CANCELED");
+        } else {
+            selectTab("UPCOMING");
         }
     }
 
@@ -177,12 +172,8 @@ public class OrderHistoryActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (tabReady != null && tabReady.getTypeface() != null && tabReady.getTypeface().isBold()) {
-            selectTab("READY");
-        } else if (tabCompleted != null && tabCompleted.getTypeface() != null && tabCompleted.getTypeface().isBold()) {
-            selectTab("COMPLETED");
-        } else if (tabCanceled != null && tabCanceled.getTypeface() != null && tabCanceled.getTypeface().isBold()) {
-            selectTab("CANCELED");
+        if (tabsOrders != null && tabsOrders.getSelectedTabPosition() >= 0) {
+            selectTab(tabsOrders.getSelectedTabPosition());
         } else {
             selectTab("UPCOMING");
         }

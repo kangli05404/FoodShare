@@ -1,5 +1,6 @@
 package com.example.foodshare.ui.consumer;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -13,6 +14,7 @@ import com.example.foodshare.database.CartDatabase;
 import com.example.foodshare.database.CartItem;
 import com.example.foodshare.database.CartDao;
 import com.example.foodshare.model.Listing;
+import com.example.foodshare.ui.orders.CheckoutActivity;
 import com.example.foodshare.util.TimeUtils;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -22,7 +24,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class ListingDetailsActivity extends AppCompatActivity {
-    private TextView textFoodName, textDescription, textPrice, textQuantity, textDiscountPeriod;
+    private TextView textFoodName, textRestaurantName, textRestaurantLocation, textDescription, textPrice, textQuantity, textDiscountPeriod;
     private TextView textToolbarTitle;
     private ImageView imageListingDetail;
     private MaterialButton buttonAddToCart;
@@ -37,6 +39,8 @@ public class ListingDetailsActivity extends AppCompatActivity {
         findViewById(R.id.buttonBack).setOnClickListener(v -> finish());
 
         textFoodName = findViewById(R.id.textFoodName);
+        textRestaurantName = findViewById(R.id.textRestaurantName);
+        textRestaurantLocation = findViewById(R.id.textRestaurantLocation);
         textDescription = findViewById(R.id.textDescription);
         textPrice = findViewById(R.id.textPrice);
         textQuantity = findViewById(R.id.textQuantity);
@@ -85,6 +89,8 @@ public class ListingDetailsActivity extends AppCompatActivity {
 
     private void bindListing(Listing listing) {
         textFoodName.setText(listing.getFoodName());
+        textRestaurantName.setText("FoodShare Partner");
+        textRestaurantLocation.setText("📍 Location unavailable");
         textDescription.setText(listing.getDescription());
         textQuantity.setText(String.format(Locale.getDefault(), "Available: %d", listing.getAvailableQuantity()));
         textToolbarTitle.setText(listing.getFoodName());
@@ -102,6 +108,20 @@ public class ListingDetailsActivity extends AppCompatActivity {
         String end = TimeUtils.getScheduleEnd(listing.getDiscountRules());
         textDiscountPeriod.setText("Available between " + start + " - " + end);
 
+        String vendorId = listing.getVendorId();
+        if (vendorId != null && !vendorId.isEmpty()) {
+            db.collection("users").document(vendorId).get()
+                    .addOnSuccessListener(vendor -> {
+                        if (!vendor.exists()) return;
+                        String vendorName = vendor.getString("name");
+                        String address = vendor.getString("storeAddress");
+                        textRestaurantName.setText(vendorName == null || vendorName.isEmpty()
+                                ? "FoodShare Partner" : vendorName);
+                        textRestaurantLocation.setText(address == null || address.isEmpty()
+                                ? "📍 Location unavailable" : "📍 " + address);
+                    });
+        }
+
         if (listing.getImageUrl() != null && !listing.getImageUrl().isEmpty()) {
             Glide.with(this).load(listing.getImageUrl()).placeholder(R.drawable.magic_box_01).into(imageListingDetail);
         }
@@ -114,7 +134,7 @@ public class ListingDetailsActivity extends AppCompatActivity {
             buttonAddToCart.setText("Not Available");
         } else {
             buttonAddToCart.setEnabled(true);
-            buttonAddToCart.setText("Add to Cart");
+            buttonAddToCart.setText("Proceed to Checkout");
         }
 
         buttonAddToCart.setOnClickListener(view -> validateAndAddToCart());
@@ -151,10 +171,9 @@ public class ListingDetailsActivity extends AppCompatActivity {
                         CartDao cartDao = CartDatabase.getInstance(getApplicationContext()).cartDao();
                         CartItem existing = cartDao.getByListingId(listing.getListingId());
 
-                        if (existing != null) {
-                            existing.quantity += 1;
-                            cartDao.update(existing);
-                        } else {
+                        // Proceeding from the details page should not increase quantity
+                        // every time the button is tapped. Quantity can be adjusted in Cart.
+                        if (existing == null) {
                             CartItem newItem = new CartItem(
                                     listing.getListingId(),
                                     listing.getVendorId(),
@@ -165,7 +184,7 @@ public class ListingDetailsActivity extends AppCompatActivity {
                             );
                             cartDao.insert(newItem);
                         }
-                        runOnUiThread(() -> Toast.makeText(this, "Added to cart", Toast.LENGTH_SHORT).show());
+                        runOnUiThread(() -> startActivity(new Intent(this, CheckoutActivity.class)));
                     });
                 });
     }

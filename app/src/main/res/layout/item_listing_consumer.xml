@@ -11,7 +11,7 @@
     app:cardBackgroundColor="@color/foodshare_surface"
     app:cardCornerRadius="16dp"
     app:cardElevation="2dp"
-    app:strokeColor="@color/foodshare_outline"
+    app:strokeColor="@color/consumer_lime_light"
     app:strokeWidth="1dp">
 
     <LinearLayout
@@ -70,17 +70,51 @@
                     android:textColor="@color/foodshare_text_secondary"
                     android:textSize="13sp" />
 
-                <!-- Price -->
+                <!-- Discounted price + original price -->
 
-                <TextView
-                    android:id="@+id/textPrice"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:text="RM 0.00"
-                    android:textColor="@color/foodshare_green"
-                    android:textSize="17sp"
-                    android:textStyle="bold" />
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textPrice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="RM 0.00"
+                        android:textColor="@color/foodshare_dark_green"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/textOriginalPrice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:text="RM 0.00"
+                        android:textColor="@color/foodshare_text_secondary"
+                        android:textSize="14sp"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/textDiscountPercent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:background="@drawable/bg_discount_badge"
+                        android:paddingStart="6dp"
+                        android:paddingTop="2dp"
+                        android:paddingEnd="6dp"
+                        android:paddingBottom="2dp"
+                        android:text="20% off"
+                        android:textColor="@color/foodshare_dark_green"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:visibility="gone" />
+
+                </LinearLayout>
 
                 <!-- Quantity -->
 
@@ -107,7 +141,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:text="Collect by: 18:00"
-            android:textColor="@color/foodshare_text_secondary"
+            android:textColor="@color/foodshare_dark_green"
             android:textSize="14sp" />
 
         <!-- ================================================= -->
@@ -133,7 +167,7 @@
             android:text="Add to Cart"
             android:textColor="@color/foodshare_surface"
             android:textSize="14sp"
-            app:backgroundTint="@color/foodshare_green"
+            app:backgroundTint="@color/consumer_lime"
             app:cornerRadius="12dp" />
 
     </LinearLayout>

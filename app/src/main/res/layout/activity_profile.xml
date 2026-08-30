@@ -19,6 +19,7 @@
 
         <!-- Green curved header -->
         <View
+            android:id="@+id/profileHeaderBackground"
             android:layout_width="match_parent"
             android:layout_height="280dp"
             android:background="@drawable/bg_login_header" />
@@ -47,17 +48,25 @@
             android:textSize="28sp"
             android:textStyle="bold" />
 
-        <!-- FoodShare logo -->
-        <ImageView
-            android:layout_width="112dp"
-            android:layout_height="112dp"
+        <!-- FoodShare logo clipped inside a rounded app-icon container -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="120dp"
+            android:layout_height="120dp"
             android:layout_gravity="top|center_horizontal"
-            android:layout_marginTop="90dp"
-            android:background="@drawable/bg_logo_container"
-            android:contentDescription="@string/app_logo_description"
-            android:scaleType="centerCrop"
-            android:id="@+id/imageViewLogo"
-            android:src="@drawable/foodshare_logo" />
+            android:layout_marginTop="86dp"
+            app:cardBackgroundColor="@color/foodshare_cream"
+            app:cardCornerRadius="30dp"
+            app:cardElevation="2dp">
+
+            <ImageView
+                android:id="@+id/imageViewLogo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/app_logo_description"
+                android:scaleType="centerCrop"
+                android:src="@drawable/foodshare_logo" />
+
+        </com.google.android.material.card.MaterialCardView>
 
         <!-- Profile information -->
         <com.google.android.material.card.MaterialCardView
@@ -196,6 +205,18 @@
                     android:textColor="@color/foodshare_green"
                     android:textSize="17sp"
                     android:textStyle="bold" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/buttonEditPersonalInfo"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="54dp"
+                    android:layout_marginTop="22dp"
+                    android:text="Edit Personal Information"
+                    android:textColor="@color/consumer_lime"
+                    android:visibility="gone"
+                    app:cornerRadius="14dp"
+                    app:strokeColor="@color/consumer_lime" />
 
                 <LinearLayout
                     android:id="@+id/layoutVendorAccountActions"

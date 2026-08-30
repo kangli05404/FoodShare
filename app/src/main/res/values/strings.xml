@@ -29,6 +29,7 @@
     <string name="reset_email_sent">Password reset email sent. Check your inbox.</string>
     <string name="reset_email_failed">Unable to send the reset email. Please try again.</string>
     <string name="profile_title">My Profile</string>
+    <string name="edit_personal_info">Edit personal information</string>
     <string name="profile_details_title">Account details</string>
     <string name="profile_name">FULL NAME</string>
     <string name="profile_email">EMAIL ADDRESS</string>
