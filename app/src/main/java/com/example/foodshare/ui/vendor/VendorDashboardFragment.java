@@ -159,7 +159,6 @@ public class VendorDashboardFragment extends Fragment {
                     int todayOrders = 0;
                     int completedOrders = 0;
                     int canceledOrders = 0;
-                    int totalOrders = 0;
 
                     double todayRevenue = 0;
                     double totalRevenue = 0;
@@ -171,43 +170,44 @@ public class VendorDashboardFragment extends Fragment {
 
                     if (snapshot != null) {
                         for (DocumentSnapshot order : snapshot.getDocuments()) {
-                            totalOrders++;
 
                             String status = order.getString("status");
-                            String payment = order.getString("payment");
                             String userId = order.getString("userId");
                             Timestamp timestamp = getOrderTimestamp(order);
                             Double total = getOrderTotal(order);
 
                             boolean canceled = status != null && status.equalsIgnoreCase("CANCELED");
                             boolean completed = status != null && status.equalsIgnoreCase("COMPLETED");
-                            boolean paid = payment != null && payment.equalsIgnoreCase("Completed");
 
                             if (isToday(timestamp)) {
                                 todayOrders++;
-                                if (!canceled && paid) todayRevenue += total;
+                                if (completed) todayRevenue += total;
                             }
 
                             if (canceled) {
                                 canceledOrders++;
-                            } else {
-                                if (userId != null && !userId.isEmpty()) customers.add(userId);
-                                if (paid) totalRevenue += total;
-
-                                if (paid && timestamp != null && !timestamp.toDate().before(sevenDaysAgo.getTime())) {
-                                    weeklyRevenue += total;
-                                }
                             }
 
                             if (completed) {
                                 completedOrders++;
                                 completedRevenue += total;
+                                totalRevenue += total;
+
+                                if (userId != null && !userId.isEmpty()) {
+                                    customers.add(userId);
+                                }
+
+                                if (timestamp != null && !timestamp.toDate().before(sevenDaysAgo.getTime())) {
+                                    weeklyRevenue += total;
+                                }
                             }
                         }
                     }
 
                     double averageOrder = completedOrders > 0 ? completedRevenue / completedOrders : 0;
-                    double cancellationRate = totalOrders > 0 ? canceledOrders * 100.0 / totalOrders : 0;
+
+                    int finalizedOrders = completedOrders + canceledOrders;
+                    double cancellationRate = finalizedOrders > 0 ? canceledOrders * 100.0 / finalizedOrders : 0;
 
                     updateDashboard(
                             todayOrders,

@@ -54,7 +54,8 @@ public class ConsumerHomeActivity extends AppCompatActivity {
             "Dessert & Snacks",
             "Drinks",
             "Mixed Food",
-            "Halal"
+            "Halal",
+            "Others"
     };
 
     private void setupCategoryChips() {

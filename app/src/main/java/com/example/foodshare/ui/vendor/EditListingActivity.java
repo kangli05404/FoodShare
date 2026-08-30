@@ -34,7 +34,7 @@ import java.util.Map;
 public class EditListingActivity extends AppCompatActivity {
     private static final String[] CATEGORIES = {
             "Vegetarian", "Bakery & Pastry", "Rice & Noodles", "Meat", "Seafood",
-            "Dessert & Snacks", "Drinks", "Mixed Food", "Halal"
+            "Dessert & Snacks", "Drinks", "Mixed Food", "Halal", "Others"
     };
 
     private FirebaseAuth firebaseAuth;
