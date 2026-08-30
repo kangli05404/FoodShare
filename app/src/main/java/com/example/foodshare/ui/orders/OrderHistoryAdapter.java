@@ -52,7 +52,12 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
         }
 
         holder.tvCardItemName.setText(itemName != null ? itemName : "Surprise Meal Box");
-        holder.tvCardStatus.setText(status != null ? status : "PENDING");
+        // Keep the Firebase status as CANCELED for order filtering, but show
+        // the correctly-spelled label to the consumer.
+        String displayStatus = "CANCELED".equalsIgnoreCase(status)
+                ? "Cancelled"
+                : (status != null ? status : "PENDING");
+        holder.tvCardStatus.setText(displayStatus);
         holder.tvCardPrice.setText(String.format(Locale.getDefault(), "RM %.2f", price));
 
         // Format and display the timestamp

@@ -48,7 +48,7 @@ public class OrderHistoryActivity extends AppCompatActivity {
         tabsOrders.addTab(tabsOrders.newTab().setText("Upcoming"));
         tabsOrders.addTab(tabsOrders.newTab().setText("To Pickup"));
         tabsOrders.addTab(tabsOrders.newTab().setText("Completed"));
-        tabsOrders.addTab(tabsOrders.newTab().setText("Canceled"));
+        tabsOrders.addTab(tabsOrders.newTab().setText("Cancelled"));
         bottomNav = findViewById(R.id.bottomNav);
 
         rvOrderHistory = findViewById(R.id.rvOrderHistory);
@@ -109,7 +109,7 @@ public class OrderHistoryActivity extends AppCompatActivity {
         } else if ("COMPLETED".equals(category)) {
             fetchOrders(Arrays.asList("COMPLETED"), "No completed orders");
         } else if ("CANCELED".equals(category)) {
-            fetchOrders(Arrays.asList("CANCELED"), "No canceled orders");
+            fetchOrders(Arrays.asList("CANCELED"), "No cancelled orders");
         }
     }
 

@@ -59,7 +59,7 @@ public class ConsumerOrdersFragment extends Fragment {
         tabsOrders.addTab(tabsOrders.newTab().setCustomView(createTabView("Upcoming")));
         tabsOrders.addTab(tabsOrders.newTab().setCustomView(createTabView("To Pickup")));
         tabsOrders.addTab(tabsOrders.newTab().setCustomView(createTabView("Completed")));
-        tabsOrders.addTab(tabsOrders.newTab().setCustomView(createTabView("Canceled")));
+        tabsOrders.addTab(tabsOrders.newTab().setCustomView(createTabView("Cancelled")));
         updateTabAppearance(0);
         tvEmptyState = view.findViewById(R.id.tvEmptyState);
         rvOrderHistory = view.findViewById(R.id.rvOrderHistory);
@@ -92,7 +92,7 @@ public class ConsumerOrdersFragment extends Fragment {
         } else if ("COMPLETED".equals(category)) {
             fetchOrders(Collections.singletonList("COMPLETED"), "No completed orders");
         } else {
-            fetchOrders(Collections.singletonList("CANCELED"), "No canceled orders");
+            fetchOrders(Collections.singletonList("CANCELED"), "No cancelled orders");
         }
     }
 
