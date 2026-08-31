@@ -2,6 +2,7 @@ package com.example.foodshare.ui.orders;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -17,6 +18,8 @@ import com.example.foodshare.database.CartDao;
 import com.example.foodshare.database.CartDatabase;
 import com.example.foodshare.database.CartItem;
 import com.example.foodshare.util.TimeUtils;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.core.content.ContextCompat;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -236,18 +239,49 @@ public class CheckoutActivity extends AppCompatActivity {
             transaction.set(orderRef, order);
             return orderRef.getId();
         }).addOnSuccessListener(orderId -> {
-            Toast.makeText(this, "Order placed successfully!", Toast.LENGTH_SHORT).show();
             Executors.newSingleThreadExecutor().execute(() -> cartDao.clearCart());
-
-            Intent intent = new Intent(this, OrderTrackingActivity.class);
-            intent.putExtra("ORDER_ID", orderId);
-            intent.putExtra("FROM_CHECKOUT", true);
-            startActivity(intent);
-            finish();
+            showOrderSuccessMessage(orderId);
         }).addOnFailureListener(exception -> {
             btnConfirmOrder.setEnabled(true);
             Toast.makeText(this, "Unable to place order: " + exception.getMessage(), Toast.LENGTH_LONG).show();
             loadCartAndFetchDiscount();
         });
+    }
+
+    private void showOrderSuccessMessage(String orderId) {
+        Snackbar snackbar = Snackbar.make(btnConfirmOrder,
+                "Order placed successfully!", Snackbar.LENGTH_SHORT);
+        snackbar.setDuration(1400);
+        snackbar.setAnchorView(btnConfirmOrder);
+        snackbar.setAction("VIEW ORDER", view -> {
+            snackbar.dismiss();
+            openOrderTracking(orderId);
+        });
+        snackbar.setActionTextColor(ContextCompat.getColor(this, R.color.foodshare_surface));
+
+        View snackbarView = snackbar.getView();
+        snackbarView.setBackground(ContextCompat.getDrawable(this, R.drawable.bg_cart_snackbar));
+        snackbarView.setElevation(8f);
+        TextView text = snackbarView.findViewById(com.google.android.material.R.id.snackbar_text);
+        if (text != null) {
+            text.setTextColor(ContextCompat.getColor(this, R.color.foodshare_surface));
+            text.setTextSize(15f);
+            text.setTypeface(android.graphics.Typeface.DEFAULT, android.graphics.Typeface.BOLD);
+        }
+        snackbar.addCallback(new Snackbar.Callback() {
+            @Override
+            public void onDismissed(Snackbar transientBottomBar, int event) {
+                if (event != DISMISS_EVENT_ACTION) openOrderTracking(orderId);
+            }
+        });
+        snackbar.show();
+    }
+
+    private void openOrderTracking(String orderId) {
+        Intent intent = new Intent(this, OrderTrackingActivity.class);
+        intent.putExtra("ORDER_ID", orderId);
+        intent.putExtra("FROM_CHECKOUT", true);
+        startActivity(intent);
+        finish();
     }
 }

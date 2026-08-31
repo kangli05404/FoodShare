@@ -12,6 +12,27 @@ public class TimeUtils {
         return String.format(Locale.getDefault(), "%02d:%02d", hour, minute);
     }
 
+    /** Formats a stored 24-hour time such as 13:30 for easier reading. */
+    public static String formatDisplayTime(String time) {
+        if (time == null || time.trim().isEmpty()) return "";
+
+        int minutes = convertTimeToMinutes(time);
+        if (minutes < 0) return time.trim();
+
+        int hour = minutes / 60;
+        int minute = minutes % 60;
+        int displayHour = hour % 12;
+        if (displayHour == 0) displayHour = 12;
+
+        return String.format(
+                Locale.getDefault(),
+                "%d:%02d %s",
+                displayHour,
+                minute,
+                hour < 12 ? "AM" : "PM"
+        );
+    }
+
     public static int convertTimeToMinutes(String time) {
         if (time == null || time.trim().isEmpty()) return -1;
 
@@ -49,6 +70,26 @@ public class TimeUtils {
         }
 
         return false;
+    }
+
+    /** Returns a compact countdown label for the currently active availability rule. */
+    public static String getRemainingAvailabilityLabel(List<Map<String, Object>> rules) {
+        if (rules == null || rules.isEmpty()) return "";
+
+        int current = getCurrentTimeInMinutes();
+        for (Map<String, Object> rule : rules) {
+            int start = convertTimeToMinutes(stringValue(rule.get("startTime")));
+            int end = convertTimeToMinutes(stringValue(rule.get("endTime")));
+            if (start < 0 || end < 0 || current < start || current >= end) continue;
+
+            int remaining = end - current;
+            int hours = remaining / 60;
+            int minutes = remaining % 60;
+            if (hours > 0) return String.format(Locale.getDefault(), "%dh %02dm left", hours, minutes);
+            return String.format(Locale.getDefault(), "%dm left", minutes);
+        }
+
+        return "";
     }
 
     public static double getCurrentDiscountPercent(List<Map<String, Object>> rules) {

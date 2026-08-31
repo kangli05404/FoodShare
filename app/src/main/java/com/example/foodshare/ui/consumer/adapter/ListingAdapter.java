@@ -8,6 +8,9 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -134,9 +137,30 @@ public class ListingAdapter extends RecyclerView.Adapter<ListingAdapter.ListingV
 
         holder.textQuantity.setText(String.format(Locale.getDefault(), "Available: %d", listing.getAvailableQuantity()));
 
+        String remainingLabel = TimeUtils.getRemainingAvailabilityLabel(listing.getDiscountRules());
+        if (remainingLabel.isEmpty()) {
+            holder.textTimeRemaining.clearAnimation();
+            holder.textTimeRemaining.setVisibility(View.GONE);
+        } else {
+            holder.textTimeRemaining.setText(remainingLabel);
+            holder.textTimeRemaining.setVisibility(View.VISIBLE);
+            holder.textTimeRemaining.clearAnimation();
+            ScaleAnimation pulse = new ScaleAnimation(
+                    1f, 1.04f, 1f, 1.04f,
+                    Animation.RELATIVE_TO_SELF, 0.5f,
+                    Animation.RELATIVE_TO_SELF, 0.5f);
+            pulse.setDuration(1100L);
+            pulse.setRepeatMode(Animation.REVERSE);
+            pulse.setRepeatCount(Animation.INFINITE);
+            pulse.setInterpolator(new AccelerateDecelerateInterpolator());
+            holder.textTimeRemaining.startAnimation(pulse);
+        }
+
         String start = TimeUtils.getScheduleStart(listing.getDiscountRules());
         String end = TimeUtils.getScheduleEnd(listing.getDiscountRules());
-        holder.textDiscountPeriod.setText("Available: " + start + " - " + end);
+        holder.textDiscountPeriod.setText("Available: "
+                + TimeUtils.formatDisplayTime(start)
+                + " - " + TimeUtils.formatDisplayTime(end));
 
         String imageUrl = listing.getImageUrl();
 
@@ -178,6 +202,11 @@ public class ListingAdapter extends RecyclerView.Adapter<ListingAdapter.ListingV
                     );
                     cartDao.insert(newItem);
                 }
+
+                if (context instanceof ConsumerMainActivity) {
+                    ((ConsumerMainActivity) context).runOnUiThread(() ->
+                            ((ConsumerMainActivity) context).refreshCartBadge());
+                }
             });
 
             showAddedToCartMessage(view);
@@ -189,6 +218,12 @@ public class ListingAdapter extends RecyclerView.Adapter<ListingAdapter.ListingV
     @Override
     public int getItemCount() {
         return listings.size();
+    }
+
+    @Override
+    public void onViewRecycled(@NonNull ListingViewHolder holder) {
+        holder.textTimeRemaining.clearAnimation();
+        super.onViewRecycled(holder);
     }
 
     private void showAddedToCartMessage(View sourceView) {
@@ -231,7 +266,8 @@ public class ListingAdapter extends RecyclerView.Adapter<ListingAdapter.ListingV
 
     static class ListingViewHolder extends RecyclerView.ViewHolder {
         ImageView imageListing;
-        TextView textFoodName, textCategory, textPrice, textOriginalPrice, textDiscountPercent, textQuantity, textDiscountPeriod;
+        TextView textFoodName, textCategory, textPrice, textOriginalPrice, textDiscountPercent,
+                textQuantity, textDiscountPeriod, textTimeRemaining;
         MaterialButton buttonAddToCart;
 
         public ListingViewHolder(@NonNull View itemView) {
@@ -247,6 +283,7 @@ public class ListingAdapter extends RecyclerView.Adapter<ListingAdapter.ListingV
                     | Paint.STRIKE_THRU_TEXT_FLAG);
             textQuantity = itemView.findViewById(R.id.textQuantity);
             textDiscountPeriod = itemView.findViewById(R.id.textDiscountPeriod);
+            textTimeRemaining = itemView.findViewById(R.id.textTimeRemaining);
             buttonAddToCart = itemView.findViewById(R.id.buttonAddToCart);
         }
     }

@@ -106,7 +106,9 @@ public class ListingDetailsActivity extends AppCompatActivity {
 
         String start = TimeUtils.getScheduleStart(listing.getDiscountRules());
         String end = TimeUtils.getScheduleEnd(listing.getDiscountRules());
-        textDiscountPeriod.setText("Available between " + start + " - " + end);
+        textDiscountPeriod.setText("Available between "
+                + TimeUtils.formatDisplayTime(start)
+                + " - " + TimeUtils.formatDisplayTime(end));
 
         String vendorId = listing.getVendorId();
         if (vendorId != null && !vendorId.isEmpty()) {

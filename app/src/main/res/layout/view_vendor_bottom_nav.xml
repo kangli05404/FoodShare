@@ -1,14 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.google.android.material.bottomnavigation.BottomNavigationView
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/vendorBottomNavigation"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/foodshare_surface"
-    app:itemIconTint="@color/vendor_nav_tint"
-    app:itemHorizontalTranslationEnabled="false"
-    app:itemTextColor="@color/vendor_nav_tint"
-    app:labelVisibilityMode="labeled"
-    app:menu="@menu/menu_vendor_bottom_nav" />
+    android:clipChildren="false">
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/vendorBottomNavigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/foodshare_surface"
+        app:itemIconTint="@color/vendor_nav_tint"
+        app:itemActiveIndicatorStyle="@style/VendorBottomNavigationActiveIndicator"
+        app:itemHorizontalTranslationEnabled="false"
+        app:itemTextColor="@color/vendor_nav_tint"
+        app:labelVisibilityMode="labeled"
+        app:menu="@menu/menu_vendor_bottom_nav" />
+
+    <TextView
+        android:id="@+id/vendorListingsBadge"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:layout_gravity="top|start"
+        android:background="@drawable/bg_nav_badge"
+        android:elevation="4dp"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="11sp"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/vendorOrdersBadge"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:layout_gravity="top|start"
+        android:background="@drawable/bg_nav_badge"
+        android:elevation="4dp"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="11sp"
+        android:textStyle="bold"
+        android:visibility="gone" />
+</FrameLayout>

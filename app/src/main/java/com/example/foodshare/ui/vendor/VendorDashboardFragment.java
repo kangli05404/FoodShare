@@ -8,14 +8,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.example.foodshare.R;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -31,11 +34,12 @@ public class VendorDashboardFragment extends Fragment {
     private TextView textVendorWelcome, textActiveListings, textTodayOrders, textTodayRevenue;
     private TextView textTotalRevenue, textTotalCustomers;
     private TextView textWeeklyRevenue, textCompletedOrders, textAverageOrder, textCancellationRate;
+    private int activeListingCount;
+    private int upcomingOrderCount;
 
     private FirebaseAuth firebaseAuth;
     private FirebaseFirestore firestore;
     private ListenerRegistration ordersListener;
-
     private final Handler midnightHandler = new Handler(Looper.getMainLooper());
 
     private final Runnable midnightRefresh = new Runnable() {
@@ -69,6 +73,11 @@ public class VendorDashboardFragment extends Fragment {
         textCompletedOrders = view.findViewById(R.id.textCompletedOrders);
         textAverageOrder = view.findViewById(R.id.textAverageOrder);
         textCancellationRate = view.findViewById(R.id.textCancellationRate);
+
+        ImageButton notifications = view.findViewById(R.id.buttonVendorNotifications);
+        if (notifications != null) {
+            notifications.setOnClickListener(v -> showNotificationsDialog());
+        }
 
         Button buttonCreateListing = view.findViewById(R.id.buttonCreateListing);
         buttonCreateListing.setOnClickListener(v -> startActivity(new Intent(requireContext(), CreateListingActivity.class)));
@@ -125,12 +134,20 @@ public class VendorDashboardFragment extends Fragment {
                 .get()
                 .addOnSuccessListener(result -> {
                     if (!isAdded()) return;
+                    activeListingCount = result.size();
                     textActiveListings.setText(String.valueOf(result.size()));
+                    if (requireActivity() instanceof VendorMainActivity) {
+                        ((VendorMainActivity) requireActivity()).updateListingsBadge(result.size());
+                    }
                 })
                 .addOnFailureListener(exception -> {
                     if (!isAdded()) return;
 
+                    activeListingCount = 0;
                     textActiveListings.setText("0");
+                    if (requireActivity() instanceof VendorMainActivity) {
+                        ((VendorMainActivity) requireActivity()).updateListingsBadge(0);
+                    }
                     Toast.makeText(requireContext(), R.string.failed_to_load_listings, Toast.LENGTH_SHORT).show();
                 });
     }
@@ -152,11 +169,16 @@ public class VendorDashboardFragment extends Fragment {
 
                     if (error != null) {
                         resetOrderStatistics();
+                        upcomingOrderCount = 0;
+                        if (requireActivity() instanceof VendorMainActivity) {
+                            ((VendorMainActivity) requireActivity()).updateOrdersBadge(0);
+                        }
                         Toast.makeText(requireContext(), "Failed to load dashboard orders.", Toast.LENGTH_SHORT).show();
                         return;
                     }
 
                     int todayOrders = 0;
+                    int upcomingOrders = 0;
                     int completedOrders = 0;
                     int canceledOrders = 0;
 
@@ -178,6 +200,10 @@ public class VendorDashboardFragment extends Fragment {
 
                             boolean canceled = status != null && status.equalsIgnoreCase("CANCELED");
                             boolean completed = status != null && status.equalsIgnoreCase("COMPLETED");
+
+                            if (isUpcomingOrderStatus(status)) {
+                                upcomingOrders++;
+                            }
 
                             if (isToday(timestamp)) {
                                 todayOrders++;
@@ -204,6 +230,11 @@ public class VendorDashboardFragment extends Fragment {
                         }
                     }
 
+                    if (requireActivity() instanceof VendorMainActivity) {
+                        upcomingOrderCount = upcomingOrders;
+                        ((VendorMainActivity) requireActivity()).updateOrdersBadge(upcomingOrders);
+                    }
+
                     double averageOrder = completedOrders > 0 ? completedRevenue / completedOrders : 0;
 
                     int finalizedOrders = completedOrders + canceledOrders;
@@ -226,6 +257,47 @@ public class VendorDashboardFragment extends Fragment {
         Double total = order.getDouble("totalNetPrice");
         if (total == null) total = order.getDouble("totalAmount");
         return total == null ? 0.0 : total;
+    }
+
+    private void showNotificationsDialog() {
+        View dialogView = LayoutInflater.from(requireContext())
+                .inflate(R.layout.dialog_vendor_notifications, null);
+        TextView headline = dialogView.findViewById(R.id.notificationHeadline);
+        TextView message = dialogView.findViewById(R.id.notificationMessage);
+        TextView upcomingCount = dialogView.findViewById(R.id.notificationUpcomingCount);
+        TextView listingsCount = dialogView.findViewById(R.id.notificationListingsCount);
+
+        upcomingCount.setText(String.valueOf(upcomingOrderCount));
+        listingsCount.setText(String.valueOf(activeListingCount));
+
+        if (upcomingOrderCount > 0) {
+            headline.setText("Orders need attention");
+            message.setText("You have upcoming orders waiting to be managed.");
+        } else {
+            headline.setText("You’re all caught up");
+            message.setText("There are no upcoming orders that need attention.");
+        }
+
+        if (activeListingCount == 0) {
+            message.append("\nNo active listings are available yet.");
+        }
+
+        AlertDialog dialog = new MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Notifications")
+                .setView(dialogView)
+                .setPositiveButton("Done", null)
+                .create();
+        dialog.setOnShowListener(ignored -> dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                .setTextColor(requireContext().getColor(R.color.foodshare_green)));
+        dialog.show();
+    }
+
+    private boolean isUpcomingOrderStatus(String status) {
+        if (status == null) return false;
+
+        return status.equalsIgnoreCase("Upcoming")
+                || status.equalsIgnoreCase("PENDING")
+                || status.equalsIgnoreCase("CONFIRMED");
     }
 
     private Timestamp getOrderTimestamp(DocumentSnapshot order) {

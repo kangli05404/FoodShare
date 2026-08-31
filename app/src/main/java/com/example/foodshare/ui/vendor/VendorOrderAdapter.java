@@ -159,7 +159,7 @@ public class VendorOrderAdapter extends RecyclerView.Adapter<VendorOrderAdapter.
         }
 
         if (status.equalsIgnoreCase("CANCELED")) {
-            return "CANCELED";
+            return "CANCELLED";
         }
 
         return status.toUpperCase(Locale.getDefault());

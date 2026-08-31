@@ -3,6 +3,7 @@ package com.example.foodshare.ui.consumer;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.animation.ValueAnimator;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -12,29 +13,39 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import android.view.animation.DecelerateInterpolator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.foodshare.R;
+import com.example.foodshare.database.CartDatabase;
+import com.example.foodshare.database.CartItem;
 import com.example.foodshare.model.Listing;
 import com.example.foodshare.ui.consumer.adapter.ListingAdapter;
 import com.example.foodshare.util.TimeUtils;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ConsumerHomeFragment extends Fragment {
 
@@ -51,10 +62,11 @@ public class ConsumerHomeFragment extends Fragment {
     private ValueAnimator welcomeRowAnimator;
     private int welcomeRowHeight;
     private boolean welcomeCollapsed;
+    private final ExecutorService notificationExecutor = Executors.newSingleThreadExecutor();
 
     private static final String[] CATEGORIES = {
             "All", "Vegetarian", "Bakery & Pastry", "Rice & Noodles", "Meat",
-            "Seafood", "Dessert & Snacks", "Drinks", "Mixed Food", "Halal"
+            "Seafood", "Dessert & Snacks", "Drinks", "Mixed Food", "Halal", "Others"
     };
 
     private final Runnable timeRefresh = new Runnable() {
@@ -82,8 +94,7 @@ public class ConsumerHomeFragment extends Fragment {
         welcomeRow = view.findViewById(R.id.consumerWelcomeRow);
         welcomeRow.post(() -> welcomeRowHeight = welcomeRow.getHeight());
         ImageButton notifications = view.findViewById(R.id.buttonHomeNotifications);
-        notifications.setOnClickListener(v -> Toast.makeText(requireContext(),
-                "You are all caught up!", Toast.LENGTH_SHORT).show());
+        notifications.setOnClickListener(v -> showNotificationsDialog());
 
         recyclerListings = view.findViewById(R.id.recyclerListings);
         TextInputEditText editSearch = view.findViewById(R.id.editSearch);
@@ -166,6 +177,7 @@ public class ConsumerHomeFragment extends Fragment {
             case "Drinks": return "🥤";
             case "Mixed Food": return "🍱";
             case "Halal": return "✓";
+            case "Others": return "📦";
             default: return "✨";
         }
     }
@@ -214,6 +226,104 @@ public class ConsumerHomeFragment extends Fragment {
         }
         welcomeRow = null;
         super.onDestroyView();
+    }
+
+    private void showNotificationsDialog() {
+        View dialogView = LayoutInflater.from(requireContext())
+                .inflate(R.layout.dialog_consumer_notifications, null);
+        TextView headline = dialogView.findViewById(R.id.consumerNotificationHeadline);
+        TextView message = dialogView.findViewById(R.id.consumerNotificationMessage);
+        TextView orderCountView = dialogView.findViewById(R.id.consumerNotificationOrdersCount);
+        TextView cartCountView = dialogView.findViewById(R.id.consumerNotificationCartCount);
+
+        final int[] counts = {0, 0};
+        updateNotificationSummary(headline, message, counts[0], counts[1]);
+        AlertDialog dialog = new MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Notifications")
+                .setView(dialogView)
+                .setPositiveButton("Done", null)
+                .create();
+        dialog.setOnShowListener(ignored -> {
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                    .setTextColor(requireContext().getColor(R.color.foodshare_green));
+        });
+        dialog.show();
+
+        android.content.Context appContext = requireContext().getApplicationContext();
+        notificationExecutor.execute(() -> {
+            List<CartItem> items = CartDatabase.getInstance(appContext)
+                    .cartDao().getAllCartItems();
+            int cartCount = 0;
+            if (items != null) {
+                for (CartItem item : items) cartCount += Math.max(0, item.quantity);
+            }
+            int finalCartCount = cartCount;
+            if (isAdded()) {
+                requireActivity().runOnUiThread(() -> {
+                    counts[1] = finalCartCount;
+                    updateNotificationSummary(headline, message, counts[0], counts[1]);
+                    cartCountView.setText(String.valueOf(finalCartCount));
+                });
+            }
+        });
+
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+            message.setText("Log in to see pickup reminders and order updates.");
+            return;
+        }
+
+        db.collection("orders")
+                .whereEqualTo("userId", FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    int pickupOrders = 0;
+                    for (DocumentSnapshot order : snapshot.getDocuments()) {
+                        String status = order.getString("status");
+                        if (isPickupStatus(status)) pickupOrders++;
+                    }
+                    counts[0] = pickupOrders;
+                    orderCountView.setText(String.valueOf(pickupOrders));
+                    updateNotificationSummary(headline, message, counts[0], counts[1]);
+                });
+    }
+
+    private boolean isPickupStatus(String status) {
+        if (status == null) return false;
+        return status.equalsIgnoreCase("Upcoming")
+                || status.equalsIgnoreCase("PENDING")
+                || status.equalsIgnoreCase("CONFIRMED")
+                || status.equalsIgnoreCase("READY")
+                || status.equalsIgnoreCase("Ready to Pick Up")
+                || status.equalsIgnoreCase("READY_FOR_PICKUP");
+    }
+
+    private void updateNotificationSummary(TextView headline, TextView message,
+                                           int pickupOrders, int cartItems) {
+        if (!isAdded()) return;
+        if (pickupOrders == 0 && cartItems == 0) {
+            headline.setText("You’re all caught up");
+            message.setText("No pickup reminders or cart updates right now.");
+            return;
+        }
+
+        headline.setText("A few things to check");
+        StringBuilder summary = new StringBuilder();
+        if (pickupOrders > 0) {
+            summary.append(String.format(Locale.getDefault(), "%d pickup order%s waiting", pickupOrders,
+                    pickupOrders == 1 ? " is" : "s are"));
+        }
+        if (cartItems > 0) {
+            if (summary.length() > 0) summary.append(" and ");
+            summary.append(String.format(Locale.getDefault(), "%d cart item%s saved", cartItems,
+                    cartItems == 1 ? " is" : "s are"));
+        }
+        message.setText(summary.toString());
+    }
+
+    @Override
+    public void onDestroy() {
+        notificationExecutor.shutdownNow();
+        super.onDestroy();
     }
 
     @Override

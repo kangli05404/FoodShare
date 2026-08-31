@@ -2,6 +2,7 @@ package com.example.foodshare.ui.vendor;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -36,6 +37,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.foodshare.R;
 import com.example.foodshare.model.User;
+import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
@@ -102,6 +104,31 @@ public class VendorProfileFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable android.os.Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.activity_profile, container, false);
+        root.setBackgroundColor(ContextCompat.getColor(requireContext(),
+                R.color.consumer_milky));
+
+        View header = root.findViewById(R.id.profileHeaderBackground);
+        if (header != null) header.setBackgroundResource(R.drawable.bg_consumer_header);
+
+        int lime = ContextCompat.getColor(requireContext(), R.color.consumer_lime);
+        TextView role = root.findViewById(R.id.textViewProfileRole);
+        if (role != null) role.setTextColor(lime);
+
+        MaterialButton logoutButton = root.findViewById(R.id.buttonProfileLogout);
+        if (logoutButton != null) logoutButton.setBackgroundTintList(ColorStateList.valueOf(lime));
+
+        MaterialButton changePasswordButton = root.findViewById(R.id.buttonChangePassword);
+        if (changePasswordButton != null) {
+            changePasswordButton.setTextColor(lime);
+            changePasswordButton.setStrokeColor(ColorStateList.valueOf(lime));
+        }
+
+        MaterialButton setLocationButton = root.findViewById(R.id.buttonSetStoreLocation);
+        if (setLocationButton != null) {
+            setLocationButton.setTextColor(lime);
+            setLocationButton.setStrokeColor(ColorStateList.valueOf(lime));
+        }
+
         View oldNavigation = root.findViewById(R.id.vendorBottomNavigation);
         if (oldNavigation != null) oldNavigation.setVisibility(View.GONE);
         ImageButton back = root.findViewById(R.id.buttonProfileBack);

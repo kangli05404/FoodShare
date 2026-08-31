@@ -9,37 +9,43 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="24dp">
+        android:paddingStart="20dp"
+        android:paddingTop="18dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="24dp">
 
-        <LinearLayout
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:layout_height="56dp">
 
             <ImageButton
                 android:id="@+id/buttonBack"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:background="@android:color/transparent"
+                android:layout_width="52dp"
+                android:layout_height="52dp"
+                android:layout_gravity="center_vertical|start"
+                android:background="@drawable/bg_back_button"
                 android:contentDescription="@string/action_back"
+                android:padding="14dp"
                 android:scaleType="centerInside"
                 android:src="@drawable/ic_back_dark" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                android:layout_gravity="center"
+                android:gravity="center"
                 android:text="Create Listing"
-                android:textColor="@color/foodshare_dark_green"
-                android:textSize="28sp"
+                android:textColor="@color/foodshare_text"
+                android:textSize="25sp"
                 android:textStyle="bold" />
-        </LinearLayout>
+        </FrameLayout>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="2dp"
+            android:gravity="center"
+            android:textAlignment="center"
             android:text="Create a Magic Box listing"
             android:textColor="@color/foodshare_text_secondary"
             android:textSize="15sp" />
@@ -48,7 +54,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:hint="Box Name">
+            android:hint="Box Name"
+            app:boxBackgroundColor="@color/foodshare_surface"
+            app:boxCornerRadiusBottomEnd="14dp"
+            app:boxCornerRadiusBottomStart="14dp"
+            app:boxCornerRadiusTopEnd="14dp"
+            app:boxCornerRadiusTopStart="14dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editFoodName"
@@ -62,6 +73,11 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:hint="Category"
+            app:boxBackgroundColor="@color/foodshare_surface"
+            app:boxCornerRadiusBottomEnd="14dp"
+            app:boxCornerRadiusBottomStart="14dp"
+            app:boxCornerRadiusTopEnd="14dp"
+            app:boxCornerRadiusTopStart="14dp"
             app:endIconMode="dropdown_menu">
 
             <AutoCompleteTextView
@@ -91,7 +107,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:cardBackgroundColor="@color/foodshare_light_green"
-                app:cardCornerRadius="16dp"
+                app:cardCornerRadius="18dp"
                 app:strokeColor="@color/foodshare_outline"
                 app:strokeWidth="1dp">
 
@@ -121,7 +137,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="18dp"
-            android:hint="Description">
+            android:hint="Description"
+            app:boxBackgroundColor="@color/foodshare_surface"
+            app:boxCornerRadiusBottomEnd="14dp"
+            app:boxCornerRadiusBottomStart="14dp"
+            app:boxCornerRadiusTopEnd="14dp"
+            app:boxCornerRadiusTopStart="14dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editDescription"
@@ -137,6 +158,11 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:hint="Original Price (RM)"
+            app:boxBackgroundColor="@color/foodshare_surface"
+            app:boxCornerRadiusBottomEnd="14dp"
+            app:boxCornerRadiusBottomStart="14dp"
+            app:boxCornerRadiusTopEnd="14dp"
+            app:boxCornerRadiusTopStart="14dp"
             app:prefixText="RM ">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -150,7 +176,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:hint="Quantity">
+            android:hint="Quantity"
+            app:boxBackgroundColor="@color/foodshare_surface"
+            app:boxCornerRadiusBottomEnd="14dp"
+            app:boxCornerRadiusBottomStart="14dp"
+            app:boxCornerRadiusTopEnd="14dp"
+            app:boxCornerRadiusTopStart="14dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editQuantity"
@@ -210,33 +241,32 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="28dp"
             android:layout_marginBottom="24dp"
-            android:orientation="horizontal">
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/buttonCancel"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_weight="1"
-                android:minHeight="56dp"
-                android:text="Cancel"
-                android:textColor="@color/foodshare_text"
-                app:backgroundTint="@color/foodshare_surface"
-                app:cornerRadius="14dp"
-                app:strokeColor="@color/foodshare_outline"
-                app:strokeWidth="1dp" />
+            android:orientation="vertical">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/buttonCreateListing"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_weight="1"
                 android:minHeight="56dp"
                 android:text="Create Listing"
                 android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
                 app:backgroundTint="@color/foodshare_green"
-                app:cornerRadius="14dp" />
+                app:cornerRadius="16dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonCancel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:minHeight="52dp"
+                android:text="Cancel"
+                android:textColor="@color/foodshare_text_secondary"
+                app:backgroundTint="@color/foodshare_surface"
+                app:cornerRadius="16dp"
+                app:strokeColor="@color/foodshare_outline"
+                app:strokeWidth="1dp" />
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

@@ -17,10 +17,16 @@ import com.example.foodshare.database.CartItem;
 import com.example.foodshare.ui.consumer.adapter.CartAdapter;
 import com.example.foodshare.ui.orders.CheckoutActivity;
 import com.example.foodshare.ui.profile.ProfileActivity;
+import com.example.foodshare.util.TimeUtils;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -32,6 +38,7 @@ public class CartActivity extends AppCompatActivity {
     private List<CartItem> currentCartItems;
     private CartAdapter adapter;
     private CartDao cartDao;
+    private FirebaseFirestore firestore;
     private BottomNavigationView bottomNav;
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
@@ -46,6 +53,7 @@ public class CartActivity extends AppCompatActivity {
         bottomNav = findViewById(R.id.bottomNav);
 
         cartDao = CartDatabase.getInstance(getApplicationContext()).cartDao();
+        firestore = FirebaseFirestore.getInstance();
         recyclerCart.setLayoutManager(new LinearLayoutManager(this));
 
         // Checkout Button Click Listener
@@ -93,7 +101,7 @@ public class CartActivity extends AppCompatActivity {
 
     private void loadCartItems() {
         executor.execute(() -> {
-            List<CartItem> items = cartDao.getAllCartItems();
+            List<CartItem> items = removeExpiredItems(cartDao.getAllCartItems());
             currentCartItems = items; // This populates the field and clears the warning
 
             runOnUiThread(() -> {
@@ -124,6 +132,39 @@ public class CartActivity extends AppCompatActivity {
                 calculateTotal(items);
             });
         });
+    }
+
+    private List<CartItem> removeExpiredItems(List<CartItem> items) {
+        List<CartItem> validItems = new ArrayList<>();
+        if (items == null) return validItems;
+
+        for (CartItem item : items) {
+            try {
+                DocumentSnapshot listing = Tasks.await(
+                        firestore.collection("listings").document(item.listingId).get());
+
+                if (!listing.exists()) {
+                    cartDao.delete(item);
+                    continue;
+                }
+
+                @SuppressWarnings("unchecked")
+                List<Map<String, Object>> rules =
+                        (List<Map<String, Object>>) listing.get("discountRules");
+
+                if (!TimeUtils.isWithinDiscountRules(rules)) {
+                    cartDao.delete(item);
+                    continue;
+                }
+
+                validItems.add(item);
+            } catch (Exception ignored) {
+                // Keep the item if the listing cannot be checked temporarily.
+                validItems.add(item);
+            }
+        }
+
+        return validItems;
     }
 
     private void updateItem(CartItem item) {

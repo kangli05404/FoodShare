@@ -1,6 +1,5 @@
 package com.example.foodshare.ui.vendor;
 
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,11 +11,14 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.foodshare.R;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
@@ -113,6 +115,9 @@ public class VendorOrdersFragment extends Fragment {
                     if (!isAdded()) return;
 
                     if (error != null) {
+                        if (requireActivity() instanceof VendorMainActivity) {
+                            ((VendorMainActivity) requireActivity()).updateOrdersBadge(0);
+                        }
                         Toast.makeText(requireContext(), "Failed to load orders: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                         return;
                     }
@@ -121,6 +126,17 @@ public class VendorOrdersFragment extends Fragment {
 
                     if (snapshot != null) {
                         allOrders.addAll(snapshot.getDocuments());
+                    }
+
+                    int upcomingOrderCount = 0;
+                    for (DocumentSnapshot order : allOrders) {
+                        if (isUpcomingStatus(order.getString("status"))) {
+                            upcomingOrderCount++;
+                        }
+                    }
+
+                    if (requireActivity() instanceof VendorMainActivity) {
+                        ((VendorMainActivity) requireActivity()).updateOrdersBadge(upcomingOrderCount);
                     }
 
                     Collections.sort(allOrders, (order1, order2) -> {
@@ -170,12 +186,14 @@ public class VendorOrdersFragment extends Fragment {
     }
 
     private void resetTabStyle(TextView tab) {
-        tab.setTextColor(Color.parseColor("#888888"));
+        tab.setBackgroundResource(R.drawable.bg_order_tab_inactive);
+        tab.setTextColor(tab.getContext().getColor(R.color.foodshare_text_secondary));
         tab.setTypeface(null, Typeface.NORMAL);
     }
 
     private void setActiveTabStyle(TextView tab) {
-        tab.setTextColor(Color.parseColor("#5A774A"));
+        tab.setBackgroundResource(R.drawable.bg_order_tab_active);
+        tab.setTextColor(tab.getContext().getColor(R.color.foodshare_dark_green));
         tab.setTypeface(null, Typeface.BOLD);
     }
 
@@ -253,7 +271,7 @@ public class VendorOrdersFragment extends Fragment {
             return "No completed orders.";
         }
 
-        return "No canceled orders.";
+        return "No cancelled orders.";
     }
 
     private void handleOrderAction(DocumentSnapshot order) {
@@ -277,12 +295,24 @@ public class VendorOrdersFragment extends Fragment {
             itemName = "this order";
         }
 
-        new AlertDialog.Builder(requireContext())
-                .setTitle("Complete Order?")
-                .setMessage("Confirm that the customer has collected " + itemName + ".")
+        View dialogView = LayoutInflater.from(requireContext())
+                .inflate(R.layout.dialog_complete_order, null);
+        TextView message = dialogView.findViewById(R.id.completeOrderMessage);
+        message.setText("Confirm that the customer has collected " + itemName + ".");
+
+        AlertDialog dialog = new MaterialAlertDialogBuilder(requireContext())
+                .setView(dialogView)
                 .setNegativeButton("Cancel", null)
-                .setPositiveButton("Complete", (dialog, which) -> updateOrderStatus(order.getId(), "COMPLETED"))
-                .show();
+                .setPositiveButton("Complete", (buttonDialog, which) -> updateOrderStatus(order.getId(), "COMPLETED"))
+                .create();
+
+        dialog.setOnShowListener(ignored -> {
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                    .setTextColor(requireContext().getColor(R.color.foodshare_green));
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+                    .setTextColor(requireContext().getColor(R.color.foodshare_text_secondary));
+        });
+        dialog.show();
     }
 
     private void updateOrderStatus(String orderId, String newStatus) {
@@ -311,13 +341,36 @@ public class VendorOrdersFragment extends Fragment {
             if (!isAdded()) return;
 
             if ("READY".equals(newStatus)) {
-                Toast.makeText(requireContext(), "Order marked as ready for pickup.", Toast.LENGTH_SHORT).show();
+                showStatusMessage("Order marked as ready for pickup.");
             } else {
-                Toast.makeText(requireContext(), "Order completed.", Toast.LENGTH_SHORT).show();
+                showStatusMessage("Order completed.");
             }
         }).addOnFailureListener(exception -> {
             if (!isAdded()) return;
             Toast.makeText(requireContext(), "Unable to update order: " + exception.getMessage(), Toast.LENGTH_LONG).show();
         });
+    }
+
+    private void showStatusMessage(String message) {
+        if (!isAdded() || recyclerOrders == null) return;
+
+        Snackbar snackbar = Snackbar.make(recyclerOrders, message, Snackbar.LENGTH_SHORT);
+        View anchor = requireActivity().findViewById(R.id.vendorBottomNavigation);
+        if (anchor != null) snackbar.setAnchorView(anchor);
+
+        View snackbarView = snackbar.getView();
+        snackbarView.setBackground(ContextCompat.getDrawable(requireContext(),
+                R.drawable.bg_cart_snackbar));
+        snackbarView.setElevation(8f);
+
+        TextView text = snackbarView.findViewById(
+                com.google.android.material.R.id.snackbar_text);
+        if (text != null) {
+            text.setTextColor(ContextCompat.getColor(requireContext(), R.color.foodshare_surface));
+            text.setTextSize(15f);
+            text.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+        }
+
+        snackbar.show();
     }
 }

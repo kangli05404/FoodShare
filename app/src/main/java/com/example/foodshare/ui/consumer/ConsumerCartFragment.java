@@ -20,10 +20,16 @@ import com.example.foodshare.database.CartDatabase;
 import com.example.foodshare.database.CartItem;
 import com.example.foodshare.ui.consumer.adapter.CartAdapter;
 import com.example.foodshare.ui.orders.CheckoutActivity;
+import com.example.foodshare.util.TimeUtils;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -34,6 +40,7 @@ public class ConsumerCartFragment extends Fragment {
     private MaterialButton buttonCheckout;
     private List<CartItem> currentCartItems;
     private CartDao cartDao;
+    private FirebaseFirestore firestore;
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     @Nullable
@@ -54,6 +61,7 @@ public class ConsumerCartFragment extends Fragment {
         textCartTotal = view.findViewById(R.id.textCartTotal);
         buttonCheckout = view.findViewById(R.id.buttonCheckout);
         cartDao = CartDatabase.getInstance(requireContext().getApplicationContext()).cartDao();
+        firestore = FirebaseFirestore.getInstance();
         recyclerCart.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         buttonCheckout.setOnClickListener(v -> {
@@ -69,11 +77,14 @@ public class ConsumerCartFragment extends Fragment {
 
     private void loadCartItems() {
         executor.execute(() -> {
-            List<CartItem> items = cartDao.getAllCartItems();
+            List<CartItem> items = removeExpiredItems(cartDao.getAllCartItems());
             currentCartItems = items;
             if (!isAdded()) return;
             requireActivity().runOnUiThread(() -> {
                 if (!isAdded()) return;
+                if (requireActivity() instanceof ConsumerMainActivity) {
+                    ((ConsumerMainActivity) requireActivity()).refreshCartBadge();
+                }
                 CartAdapter adapter = new CartAdapter(items, new CartAdapter.OnCartActionListener() {
                     @Override public void onIncrease(CartItem item) {
                         item.quantity += 1;
@@ -97,6 +108,39 @@ public class ConsumerCartFragment extends Fragment {
                 calculateTotal(items);
             });
         });
+    }
+
+    private List<CartItem> removeExpiredItems(List<CartItem> items) {
+        List<CartItem> validItems = new ArrayList<>();
+        if (items == null) return validItems;
+
+        for (CartItem item : items) {
+            try {
+                DocumentSnapshot listing = Tasks.await(
+                        firestore.collection("listings").document(item.listingId).get());
+
+                if (!listing.exists()) {
+                    cartDao.delete(item);
+                    continue;
+                }
+
+                @SuppressWarnings("unchecked")
+                List<Map<String, Object>> rules =
+                        (List<Map<String, Object>>) listing.get("discountRules");
+
+                if (!TimeUtils.isWithinDiscountRules(rules)) {
+                    cartDao.delete(item);
+                    continue;
+                }
+
+                validItems.add(item);
+            } catch (Exception ignored) {
+                // Keep the item if the listing cannot be checked temporarily.
+                validItems.add(item);
+            }
+        }
+
+        return validItems;
     }
 
     private void updateItem(CartItem item) {

@@ -28,7 +28,7 @@ import java.util.Map;
 
 public class VendorListingsFragment extends Fragment {
     private LinearLayout layoutListings;
-    private TextView textEmptyListings, textListingCount;
+    private TextView textEmptyListings;
     private FirebaseAuth firebaseAuth;
     private FirebaseFirestore firestore;
 
@@ -55,7 +55,6 @@ public class VendorListingsFragment extends Fragment {
 
         layoutListings = view.findViewById(R.id.layoutListings);
         textEmptyListings = view.findViewById(R.id.textEmptyListings);
-        textListingCount = view.findViewById(R.id.textListingCount);
 
         View buttonCreateListing = view.findViewById(R.id.buttonCreateListing);
         buttonCreateListing.setOnClickListener(v -> startActivity(new Intent(requireContext(), CreateListingActivity.class)));
@@ -72,7 +71,6 @@ public class VendorListingsFragment extends Fragment {
 
         clearListingViews();
         textEmptyListings.setVisibility(View.GONE);
-        textListingCount.setText("Loading...");
 
         firestore.collection("listings")
                 .whereEqualTo("vendorId", firebaseAuth.getCurrentUser().getUid())
@@ -81,8 +79,7 @@ public class VendorListingsFragment extends Fragment {
                 .addOnSuccessListener(result -> {
                     clearListingViews();
                     List<DocumentSnapshot> listings = result.getDocuments();
-
-                    textListingCount.setText(listings.size() + (listings.size() == 1 ? " Listing" : " Listings"));
+                    updateListingsBadge(listings.size());
 
                     if (listings.isEmpty()) {
                         textEmptyListings.setVisibility(View.VISIBLE);
@@ -97,10 +94,17 @@ public class VendorListingsFragment extends Fragment {
                 })
                 .addOnFailureListener(exception -> {
                     clearListingViews();
-                    textListingCount.setText("0 Listings");
+                    updateListingsBadge(0);
                     textEmptyListings.setText("Failed to load listings.");
                     textEmptyListings.setVisibility(View.VISIBLE);
                 });
+    }
+
+    private void updateListingsBadge(int count) {
+        if (!isAdded()) return;
+        if (requireActivity() instanceof VendorMainActivity) {
+            ((VendorMainActivity) requireActivity()).updateListingsBadge(count);
+        }
     }
 
     private void clearListingViews() {
@@ -141,7 +145,10 @@ public class VendorListingsFragment extends Fragment {
         String start = TimeUtils.getScheduleStart(discountRules);
         String end = TimeUtils.getScheduleEnd(discountRules);
 
-        period.setText(start.isEmpty() || end.isEmpty() ? "Availability: Not set" : "Availability: " + start + " - " + end);
+        period.setText(start.isEmpty() || end.isEmpty()
+                ? "Availability: Not set"
+                : "Availability: " + TimeUtils.formatDisplayTime(start)
+                + " - " + TimeUtils.formatDisplayTime(end));
         rules.setText(formatDiscountRules(discountRules));
 
         edit.setOnClickListener(v -> {
@@ -188,15 +195,19 @@ public class VendorListingsFragment extends Fragment {
             double discount = discountObject instanceof Number ? ((Number) discountObject).doubleValue() : 0;
 
             result.append("\n")
-                    .append(value.get("startTime"))
+                    .append(TimeUtils.formatDisplayTime(stringValue(value.get("startTime"))))
                     .append(" - ")
-                    .append(value.get("endTime"))
+                    .append(TimeUtils.formatDisplayTime(stringValue(value.get("endTime"))))
                     .append(" : ")
                     .append(TimeUtils.formatDiscount(discount))
                     .append("%");
         }
 
         return result.toString();
+    }
+
+    private String stringValue(Object value) {
+        return value instanceof String ? (String) value : "";
     }
 
     private String stringValue(DocumentSnapshot document, String field) {

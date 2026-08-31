@@ -5,99 +5,109 @@
     android:background="@color/foodshare_cream"
     android:orientation="vertical">
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:layout_height="92dp"
         android:paddingStart="24dp"
         android:paddingTop="24dp"
         android:paddingEnd="24dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Orders"
-            android:textColor="@color/foodshare_dark_green"
-            android:textSize="28sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="Manage customer pickup orders"
-            android:textColor="@color/foodshare_text_secondary"
-            android:textSize="15sp" />
-    </LinearLayout>
-
-    <HorizontalScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:fillViewport="true"
-        android:scrollbars="none">
-
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp">
+            android:layout_gravity="center"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/tabUpcoming"
                 android:layout_width="wrap_content"
-                android:layout_height="48dp"
-                android:gravity="center"
-                android:minWidth="95dp"
-                android:paddingStart="14dp"
-                android:paddingEnd="14dp"
-                android:text="Upcoming"
-                android:textColor="@color/foodshare_green"
-                android:textSize="15sp"
+                android:layout_height="wrap_content"
+                android:text="Orders"
+                android:textColor="@color/foodshare_text"
+                android:textSize="28sp"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/tabReady"
                 android:layout_width="wrap_content"
-                android:layout_height="48dp"
-                android:gravity="center"
-                android:minWidth="85dp"
-                android:paddingStart="14dp"
-                android:paddingEnd="14dp"
-                android:text="Ready"
-                android:textColor="@color/foodshare_text_secondary"
-                android:textSize="15sp" />
-
-            <TextView
-                android:id="@+id/tabCompleted"
-                android:layout_width="wrap_content"
-                android:layout_height="48dp"
-                android:gravity="center"
-                android:minWidth="105dp"
-                android:paddingStart="14dp"
-                android:paddingEnd="14dp"
-                android:text="Completed"
-                android:textColor="@color/foodshare_text_secondary"
-                android:textSize="15sp" />
-
-            <TextView
-                android:id="@+id/tabCanceled"
-                android:layout_width="wrap_content"
-                android:layout_height="48dp"
-                android:gravity="center"
-                android:minWidth="100dp"
-                android:paddingStart="14dp"
-                android:paddingEnd="14dp"
-                android:text="Canceled"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:text="Manage customer pickup orders"
                 android:textColor="@color/foodshare_text_secondary"
                 android:textSize="15sp" />
         </LinearLayout>
-    </HorizontalScrollView>
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/bg_order_tabs_container"
+        android:orientation="horizontal"
+        android:padding="4dp">
+
+        <TextView
+            android:id="@+id/tabUpcoming"
+            android:layout_width="0dp"
+            android:layout_height="46dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_order_tab_active"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:text="Upcoming"
+            android:textColor="@color/foodshare_dark_green"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tabReady"
+            android:layout_width="0dp"
+            android:layout_height="46dp"
+            android:layout_marginStart="3dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_order_tab_inactive"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:text="Ready"
+            android:textColor="@color/foodshare_text_secondary"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tabCompleted"
+            android:layout_width="0dp"
+            android:layout_height="46dp"
+            android:layout_marginStart="3dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_order_tab_inactive"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:text="Completed"
+            android:textColor="@color/foodshare_text_secondary"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tabCanceled"
+            android:layout_width="0dp"
+            android:layout_height="46dp"
+            android:layout_marginStart="3dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_order_tab_inactive"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:text="Cancelled"
+            android:textColor="@color/foodshare_text_secondary"
+            android:textSize="14sp" />
+    </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:layout_marginTop="12dp"
         android:background="@color/foodshare_outline" />
 
     <FrameLayout
