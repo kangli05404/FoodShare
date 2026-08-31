@@ -165,9 +165,9 @@ public class ListingAdapter extends RecyclerView.Adapter<ListingAdapter.ListingV
         String imageUrl = listing.getImageUrl();
 
         if (imageUrl != null && !imageUrl.isEmpty()) {
-            Glide.with(context).load(imageUrl).placeholder(R.drawable.magic_box_01).into(holder.imageListing);
+            Glide.with(context).load(imageUrl).placeholder(R.drawable.ic_food_placeholder).into(holder.imageListing);
         } else {
-            holder.imageListing.setImageResource(R.drawable.magic_box_01);
+            holder.imageListing.setImageResource(R.drawable.ic_food_placeholder);
         }
 
         holder.buttonAddToCart.setOnClickListener(view -> {

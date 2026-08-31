@@ -155,7 +155,7 @@ public class OrderTrackingActivity extends AppCompatActivity {
                             if (tvPaymentMethod != null && paymentMethod != null) tvPaymentMethod.setText(paymentMethod);
                             if (tvPaymentStatus != null && paymentStatus != null) tvPaymentStatus.setText(paymentStatus);
                             if (ivOrderImage != null && imageUrl != null && !imageUrl.isEmpty()) {
-                                Glide.with(this).load(imageUrl).placeholder(R.drawable.magic_box_01).into(ivOrderImage);
+                                Glide.with(this).load(imageUrl).placeholder(R.drawable.ic_food_placeholder).into(ivOrderImage);
                             }
 
                             // Fetch vendor location directly using vendorId

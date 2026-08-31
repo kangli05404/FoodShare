@@ -125,7 +125,7 @@ public class ListingDetailsActivity extends AppCompatActivity {
         }
 
         if (listing.getImageUrl() != null && !listing.getImageUrl().isEmpty()) {
-            Glide.with(this).load(listing.getImageUrl()).placeholder(R.drawable.magic_box_01).into(imageListingDetail);
+            Glide.with(this).load(listing.getImageUrl()).placeholder(R.drawable.ic_food_placeholder).into(imageListingDetail);
         }
 
         if (listing.getAvailableQuantity() <= 0) {

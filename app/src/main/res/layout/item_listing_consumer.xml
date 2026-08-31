@@ -45,7 +45,7 @@
                     android:layout_height="match_parent"
                     android:contentDescription="Magic Box image"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/magic_box_01" />
+                    android:src="@drawable/ic_food_placeholder" />
 
             </FrameLayout>
 

@@ -29,7 +29,7 @@
                 android:layout_height="88dp"
                 android:contentDescription="Order item image"
                 android:scaleType="centerCrop"
-                android:src="@drawable/magic_box_01" />
+                android:src="@drawable/ic_food_placeholder" />
 
             <LinearLayout
                 android:layout_width="0dp"

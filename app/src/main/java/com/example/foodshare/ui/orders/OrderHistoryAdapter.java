@@ -83,7 +83,7 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
         if (holder.ivCardItem != null && imageUrl != null && !imageUrl.isEmpty()) {
             Glide.with(holder.itemView.getContext())
                     .load(imageUrl)
-                    .placeholder(R.drawable.magic_box_01)
+                    .placeholder(R.drawable.ic_food_placeholder)
                     .into(holder.ivCardItem);
         }
 

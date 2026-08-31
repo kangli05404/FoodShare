@@ -171,10 +171,10 @@ public class VendorListingsFragment extends Fragment {
         if (!imageUrl.isEmpty()) {
             Glide.with(this)
                     .load(imageUrl)
-                    .placeholder(R.drawable.magic_box_01)
+                    .placeholder(R.drawable.ic_food_placeholder)
                     .into(image);
         } else {
-            image.setImageResource(R.drawable.magic_box_01);
+            image.setImageResource(R.drawable.ic_food_placeholder);
         }
 
         layoutListings.addView(listingView);

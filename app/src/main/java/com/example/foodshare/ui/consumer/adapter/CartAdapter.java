@@ -72,10 +72,10 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
         if (item.imageUrl != null && !item.imageUrl.isEmpty()) {
             Glide.with(holder.itemView.getContext())
                     .load(item.imageUrl)
-                    .placeholder(R.drawable.magic_box_01)
+                    .placeholder(R.drawable.ic_food_placeholder)
                     .into(holder.imageCartItem);
         } else {
-            holder.imageCartItem.setImageResource(R.drawable.magic_box_01);
+            holder.imageCartItem.setImageResource(R.drawable.ic_food_placeholder);
         }
 
         holder.buttonIncrease.setOnClickListener(v -> listener.onIncrease(item));

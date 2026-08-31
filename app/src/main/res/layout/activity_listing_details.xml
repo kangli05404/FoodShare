@@ -55,7 +55,7 @@
             android:scaleType="fitCenter"
             android:background="@color/foodshare_surface"
             android:contentDescription="Food image"
-            android:src="@drawable/magic_box_01" />
+            android:src="@drawable/ic_food_placeholder" />
 
         <LinearLayout
             android:layout_width="match_parent"

@@ -97,10 +97,10 @@ public class VendorOrderAdapter extends RecyclerView.Adapter<VendorOrderAdapter.
         if (imageUrl != null && !imageUrl.isEmpty()) {
             Glide.with(holder.itemView.getContext())
                     .load(imageUrl)
-                    .placeholder(R.drawable.magic_box_01)
+                    .placeholder(R.drawable.ic_food_placeholder)
                     .into(holder.imageOrder);
         } else {
-            holder.imageOrder.setImageResource(R.drawable.magic_box_01);
+            holder.imageOrder.setImageResource(R.drawable.ic_food_placeholder);
         }
 
         setupActionButton(holder.buttonOrderAction, order, status);

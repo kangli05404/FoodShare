@@ -174,7 +174,7 @@
                     android:background="@color/foodshare_light_green"
                     android:contentDescription="Listing image"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/magic_box_01" />
+                    android:src="@drawable/ic_food_placeholder" />
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.button.MaterialButton

@@ -146,8 +146,14 @@ public class EditListingActivity extends AppCompatActivity {
                     if (selectedImageName == null) selectedImageName = "";
                     if (existingImageUrl == null) existingImageUrl = "";
 
-                    if (!existingImageUrl.isEmpty()) Glide.with(this).load(existingImageUrl).placeholder(R.drawable.magic_box_01).into(imageListing);
-                    else setImageFromName(selectedImageName);
+                    if (!existingImageUrl.isEmpty()) {
+                        Glide.with(this)
+                                .load(existingImageUrl)
+                                .placeholder(R.drawable.ic_food_placeholder)
+                                .into(imageListing);
+                    } else {
+                        imageListing.setImageResource(R.drawable.ic_food_placeholder);
+                    }
 
                     ArrayList<DiscountRule> loadedRules = new ArrayList<>();
                     Object rulesObject = document.get("discountRules");
@@ -178,21 +184,6 @@ public class EditListingActivity extends AppCompatActivity {
                     buttonSaveListing.setEnabled(true);
                     Toast.makeText(this, "Failed to load listing: " + exception.getMessage(), Toast.LENGTH_LONG).show();
                 });
-    }
-
-    private void setImageFromName(String imageName) {
-        int imageResource;
-
-        switch (imageName) {
-            case "magic_box_01": imageResource = R.drawable.magic_box_01; break;
-            case "magic_box_02": imageResource = R.drawable.magic_box_02; break;
-            case "magic_box_03": imageResource = R.drawable.magic_box_03; break;
-            case "magic_box_04": imageResource = R.drawable.magic_box_04; break;
-            case "magic_box_05": imageResource = R.drawable.magic_box_05; break;
-            default: return;
-        }
-
-        imageListing.setImageResource(imageResource);
     }
 
     private void updateListing() {

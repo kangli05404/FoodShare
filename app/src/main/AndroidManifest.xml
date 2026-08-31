@@ -21,22 +21,13 @@
             android:value="\${MAPS_API_KEY}" />
 
         <activity
-            android:name=".ui.profile.ProfileActivity"
-            android:exported="false" />
-        <activity
             android:name=".ui.vendor.VendorMainActivity"
             android:exported="false" />
         <activity
             android:name=".ui.vendor.CreateListingActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.consumer.ConsumerHomeActivity"
-            android:exported="false" />
-        <activity
             android:name=".ui.consumer.ConsumerMainActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.consumer.CartActivity"
             android:exported="false" />
         <activity
             android:name=".ui.consumer.ListingDetailsActivity"
@@ -47,10 +38,6 @@
         <activity
             android:name=".ui.vendor.StoreLocationActivity"
             android:exported="false" />
-        <activity
-            android:name=".ui.consumer.ConsumerProfileActivity"
-            android:exported="false" />
-
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"
@@ -82,10 +69,6 @@
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".ui.orders.OrderTrackingActivity"
-            android:exported="false"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
-            android:name=".ui.orders.OrderHistoryActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
     </application>

@@ -162,7 +162,7 @@ public class CheckoutActivity extends AppCompatActivity {
             tvFinalTotal.setText(String.format(Locale.getDefault(), "RM %.2f", finalNetTotal));
 
             if (savedImageUrl != null && !savedImageUrl.isEmpty()) {
-                Glide.with(this).load(savedImageUrl).placeholder(R.drawable.magic_box_01).into(ivCheckoutItem);
+                Glide.with(this).load(savedImageUrl).placeholder(R.drawable.ic_food_placeholder).into(ivCheckoutItem);
             }
 
             btnConfirmOrder.setEnabled(listingAvailableNow);
