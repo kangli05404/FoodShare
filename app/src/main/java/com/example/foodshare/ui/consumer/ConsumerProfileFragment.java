@@ -2,14 +2,11 @@ package com.example.foodshare.ui.consumer;
 
 import android.os.Bundle;
 import android.content.res.ColorStateList;
-import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,6 +22,7 @@ import com.example.foodshare.model.User;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
@@ -83,7 +81,10 @@ public class ConsumerProfileFragment extends Fragment {
 
         Button changePassword = view.findViewById(R.id.buttonChangePassword);
         Button logout = view.findViewById(R.id.buttonProfileLogout);
-        if (changePassword != null) changePassword.setVisibility(View.GONE);
+        if (changePassword != null) {
+            changePassword.setVisibility(View.VISIBLE);
+            changePassword.setOnClickListener(v -> showChangePasswordDialog());
+        }
         if (editPersonalInfoButton != null) {
             editPersonalInfoButton.setOnClickListener(v -> showEditPersonalInfoDialog());
         }
@@ -194,6 +195,92 @@ public class ConsumerProfileFragment extends Fragment {
             });
         });
         dialog.show();
+    }
+
+    private void showChangePasswordDialog() {
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+        if (user == null || user.getEmail() == null) {
+            Toast.makeText(requireContext(), "Please sign in again.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        View form = LayoutInflater.from(requireContext())
+                .inflate(R.layout.dialog_change_password, null, false);
+        TextInputLayout currentPasswordLayout = form.findViewById(R.id.currentPasswordLayout);
+        TextInputLayout newPasswordLayout = form.findViewById(R.id.newPasswordLayout);
+        TextInputLayout confirmPasswordLayout = form.findViewById(R.id.confirmPasswordLayout);
+        TextInputEditText currentPassword = form.findViewById(R.id.currentPasswordInput);
+        TextInputEditText newPassword = form.findViewById(R.id.newPasswordInput);
+        TextInputEditText confirmPassword = form.findViewById(R.id.confirmPasswordInput);
+
+        AlertDialog dialog = new MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.change_password)
+                .setView(form)
+                .setNegativeButton(R.string.cancel, null)
+                .setPositiveButton(R.string.change_password, null)
+                .create();
+
+        dialog.setOnShowListener(ignored -> {
+            Button changeButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+            changeButton.setTextColor(ContextCompat.getColor(
+                    requireContext(), R.color.consumer_lime));
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(
+                    ContextCompat.getColor(requireContext(), R.color.foodshare_text_secondary));
+
+            changeButton.setOnClickListener(v -> {
+                currentPasswordLayout.setError(null);
+                newPasswordLayout.setError(null);
+                confirmPasswordLayout.setError(null);
+
+                String currentValue = currentPassword.getText().toString();
+                String newValue = newPassword.getText().toString();
+                String confirmValue = confirmPassword.getText().toString();
+
+                if (currentValue.isEmpty()) {
+                    currentPasswordLayout.setError(getString(R.string.current_password));
+                    return;
+                }
+                if (newValue.length() < 6) {
+                    newPasswordLayout.setError(getString(R.string.password_minimum));
+                    return;
+                }
+                if (!newValue.equals(confirmValue)) {
+                    confirmPasswordLayout.setError(getString(R.string.passwords_not_match));
+                    return;
+                }
+
+                changeButton.setEnabled(false);
+                AuthCredential credential = EmailAuthProvider.getCredential(
+                        user.getEmail(), currentValue);
+                user.reauthenticate(credential)
+                        .addOnSuccessListener(unused -> user.updatePassword(newValue)
+                                .addOnSuccessListener(passwordUnused -> {
+                                    if (!isAdded()) return;
+                                    dialog.dismiss();
+                                    Toast.makeText(requireContext(),
+                                            R.string.password_changed,
+                                            Toast.LENGTH_LONG).show();
+                                })
+                                .addOnFailureListener(e -> {
+                                    changeButton.setEnabled(true);
+                                    if (isAdded()) {
+                                        Toast.makeText(requireContext(),
+                                                getString(R.string.password_change_failed,
+                                                        safeMessage(e)),
+                                                Toast.LENGTH_LONG).show();
+                                    }
+                                }))
+                        .addOnFailureListener(e -> {
+                            changeButton.setEnabled(true);
+                            currentPasswordLayout.setError(safeMessage(e));
+                        });
+            });
+        });
+        dialog.show();
+    }
+
+    private String safeMessage(Exception exception) {
+        return exception.getMessage() == null ? "Unknown error" : exception.getMessage();
     }
 
     private void logout() {

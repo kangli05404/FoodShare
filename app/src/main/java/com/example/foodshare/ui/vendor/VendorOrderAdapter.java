@@ -14,10 +14,13 @@ import com.bumptech.glide.Glide;
 import com.example.foodshare.R;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class VendorOrderAdapter extends RecyclerView.Adapter<VendorOrderAdapter.OrderViewHolder> {
     public interface OnOrderActionListener {
@@ -26,6 +29,8 @@ public class VendorOrderAdapter extends RecyclerView.Adapter<VendorOrderAdapter.
 
     private final List<DocumentSnapshot> orders;
     private final OnOrderActionListener listener;
+    private final FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+    private final Map<String, CustomerContact> contactCache = new HashMap<>();
 
     public VendorOrderAdapter(List<DocumentSnapshot> orders, OnOrderActionListener listener) {
         this.orders = orders;
@@ -80,6 +85,7 @@ public class VendorOrderAdapter extends RecyclerView.Adapter<VendorOrderAdapter.
         }
 
         holder.textPayment.setText("Payment: " + paymentText);
+        bindCustomerContact(holder, order);
 
         Timestamp timestamp = order.getTimestamp("timestamp");
 
@@ -104,6 +110,82 @@ public class VendorOrderAdapter extends RecyclerView.Adapter<VendorOrderAdapter.
         }
 
         setupActionButton(holder.buttonOrderAction, order, status);
+    }
+
+    private void bindCustomerContact(OrderViewHolder holder, DocumentSnapshot order) {
+        String userId = order.getString("userId");
+        String customerName = order.getString("consumerName");
+        String customerPhone = order.getString("consumerPhone");
+        String customerEmail = order.getString("consumerEmail");
+
+        holder.layoutCustomerContact.setTag(order.getId());
+
+        if (hasContactDetails(customerName, customerPhone, customerEmail)) {
+            showCustomerContact(holder,
+                    new CustomerContact(customerName, customerPhone, customerEmail));
+            return;
+        }
+
+        CustomerContact cachedContact = contactCache.get(userId);
+        if (cachedContact != null) {
+            showCustomerContact(holder, cachedContact);
+            return;
+        }
+
+        if (userId == null || userId.trim().isEmpty()) {
+            showUnavailableContact(holder);
+            return;
+        }
+
+        holder.textCustomerName.setText("Customer: Loading...");
+        holder.textCustomerPhone.setText("Phone: Loading...");
+        holder.textCustomerEmail.setText("Email: Loading...");
+        holder.textCustomerPhone.setVisibility(View.VISIBLE);
+        holder.textCustomerEmail.setVisibility(View.VISIBLE);
+
+        String boundOrderId = order.getId();
+        firestore.collection("users").document(userId).get()
+                .addOnSuccessListener(snapshot -> {
+                    CustomerContact contact = new CustomerContact(
+                            snapshot.getString("name"),
+                            snapshot.getString("phone"),
+                            snapshot.getString("email"));
+                    contactCache.put(userId, contact);
+
+                    if (boundOrderId.equals(holder.layoutCustomerContact.getTag())) {
+                        showCustomerContact(holder, contact);
+                    }
+                })
+                .addOnFailureListener(error -> {
+                    if (boundOrderId.equals(holder.layoutCustomerContact.getTag())) {
+                        showUnavailableContact(holder);
+                    }
+                });
+    }
+
+    private boolean hasContactDetails(String name, String phone, String email) {
+        return isNotBlank(name) || isNotBlank(phone) || isNotBlank(email);
+    }
+
+    private boolean isNotBlank(String value) {
+        return value != null && !value.trim().isEmpty();
+    }
+
+    private void showCustomerContact(OrderViewHolder holder, CustomerContact contact) {
+        holder.textCustomerName.setText("Customer: "
+                + (isNotBlank(contact.name) ? contact.name : "Not provided"));
+        holder.textCustomerPhone.setText("Phone: "
+                + (isNotBlank(contact.phone) ? contact.phone : "Not provided"));
+        holder.textCustomerEmail.setText("Email: "
+                + (isNotBlank(contact.email) ? contact.email : "Not provided"));
+        holder.textCustomerPhone.setVisibility(View.VISIBLE);
+        holder.textCustomerEmail.setVisibility(View.VISIBLE);
+    }
+
+    private void showUnavailableContact(OrderViewHolder holder) {
+        holder.textCustomerName.setText("Customer details unavailable");
+        holder.textCustomerPhone.setVisibility(View.GONE);
+        holder.textCustomerEmail.setVisibility(View.GONE);
     }
 
     private void setupActionButton(Button button, DocumentSnapshot order, String status) {
@@ -180,6 +262,10 @@ public class VendorOrderAdapter extends RecyclerView.Adapter<VendorOrderAdapter.
         TextView textPickupTime;
         TextView textPayment;
         TextView textOrderTime;
+        View layoutCustomerContact;
+        TextView textCustomerName;
+        TextView textCustomerPhone;
+        TextView textCustomerEmail;
         Button buttonOrderAction;
 
         public OrderViewHolder(@NonNull View itemView) {
@@ -194,7 +280,23 @@ public class VendorOrderAdapter extends RecyclerView.Adapter<VendorOrderAdapter.
             textPickupTime = itemView.findViewById(R.id.textPickupTime);
             textPayment = itemView.findViewById(R.id.textPayment);
             textOrderTime = itemView.findViewById(R.id.textOrderTime);
+            layoutCustomerContact = itemView.findViewById(R.id.layoutCustomerContact);
+            textCustomerName = itemView.findViewById(R.id.textCustomerName);
+            textCustomerPhone = itemView.findViewById(R.id.textCustomerPhone);
+            textCustomerEmail = itemView.findViewById(R.id.textCustomerEmail);
             buttonOrderAction = itemView.findViewById(R.id.buttonOrderAction);
+        }
+    }
+
+    private static class CustomerContact {
+        final String name;
+        final String phone;
+        final String email;
+
+        CustomerContact(String name, String phone, String email) {
+            this.name = name;
+            this.phone = phone;
+            this.email = email;
         }
     }
 }

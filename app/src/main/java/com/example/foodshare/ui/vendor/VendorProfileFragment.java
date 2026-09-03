@@ -14,15 +14,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,6 +35,9 @@ import androidx.fragment.app.Fragment;
 import com.example.foodshare.R;
 import com.example.foodshare.model.User;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
@@ -348,18 +348,16 @@ public class VendorProfileFragment extends Fragment {
         FirebaseUser user = firebaseAuth.getCurrentUser();
         if (user == null || user.getEmail() == null) return;
 
-        LinearLayout form = new LinearLayout(requireContext());
-        form.setOrientation(LinearLayout.VERTICAL);
-        int padding = dpToPx(24);
-        form.setPadding(padding, dpToPx(8), padding, 0);
-        EditText current = passwordField(getString(R.string.current_password));
-        EditText newPassword = passwordField(getString(R.string.new_password));
-        EditText confirm = passwordField(getString(R.string.confirm_new_password));
-        form.addView(current);
-        form.addView(newPassword);
-        form.addView(confirm);
+        View form = LayoutInflater.from(requireContext())
+                .inflate(R.layout.dialog_change_password, null, false);
+        TextInputLayout currentLayout = form.findViewById(R.id.currentPasswordLayout);
+        TextInputLayout newPasswordLayout = form.findViewById(R.id.newPasswordLayout);
+        TextInputLayout confirmLayout = form.findViewById(R.id.confirmPasswordLayout);
+        TextInputEditText current = form.findViewById(R.id.currentPasswordInput);
+        TextInputEditText newPassword = form.findViewById(R.id.newPasswordInput);
+        TextInputEditText confirm = form.findViewById(R.id.confirmPasswordInput);
 
-        AlertDialog dialog = new AlertDialog.Builder(requireContext())
+        AlertDialog dialog = new MaterialAlertDialogBuilder(requireContext())
                 .setTitle(R.string.change_password)
                 .setView(form)
                 .setNegativeButton(R.string.cancel, null)
@@ -367,19 +365,23 @@ public class VendorProfileFragment extends Fragment {
                 .create();
         dialog.setOnShowListener(ignored -> dialog.getButton(AlertDialog.BUTTON_POSITIVE)
                 .setOnClickListener(v -> {
+                    currentLayout.setError(null);
+                    newPasswordLayout.setError(null);
+                    confirmLayout.setError(null);
+
                     String oldValue = current.getText().toString();
                     String newValue = newPassword.getText().toString();
                     String confirmValue = confirm.getText().toString();
                     if (oldValue.isEmpty()) {
-                        current.setError(getString(R.string.current_password));
+                        currentLayout.setError(getString(R.string.current_password));
                         return;
                     }
                     if (newValue.length() < 6) {
-                        newPassword.setError(getString(R.string.password_minimum));
+                        newPasswordLayout.setError(getString(R.string.password_minimum));
                         return;
                     }
                     if (!newValue.equals(confirmValue)) {
-                        confirm.setError(getString(R.string.passwords_not_match));
+                        confirmLayout.setError(getString(R.string.passwords_not_match));
                         return;
                     }
 
@@ -404,23 +406,10 @@ public class VendorProfileFragment extends Fragment {
                                     }))
                             .addOnFailureListener(e -> {
                                 positive.setEnabled(true);
-                                current.setError(safeMessage(e));
+                                currentLayout.setError(safeMessage(e));
                             });
                 }));
         dialog.show();
-    }
-
-    private EditText passwordField(String hint) {
-        EditText field = new EditText(requireContext());
-        field.setHint(hint);
-        field.setSingleLine(true);
-        field.setInputType(InputType.TYPE_CLASS_TEXT
-                | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.topMargin = dpToPx(8);
-        field.setLayoutParams(params);
-        return field;
     }
 
     private String formatCoordinates(double lat, double lng) {
@@ -461,10 +450,6 @@ public class VendorProfileFragment extends Fragment {
 
     private String safeMessage(Exception e) {
         return e.getMessage() == null ? "Unknown error" : e.getMessage();
-    }
-
-    private int dpToPx(int dp) {
-        return Math.round(dp * getResources().getDisplayMetrics().density);
     }
 
     @Override

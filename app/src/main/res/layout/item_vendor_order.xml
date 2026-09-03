@@ -68,6 +68,57 @@
             </LinearLayout>
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/layoutCustomerContact"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:background="@drawable/bg_order_customer_contact"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Customer contact"
+                android:textColor="@color/foodshare_text"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textCustomerName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="7dp"
+                android:text="Customer: Loading..."
+                android:textColor="@color/foodshare_text"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/textCustomerPhone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:autoLink="phone"
+                android:linksClickable="true"
+                android:text="Phone: Loading..."
+                android:textColor="@color/foodshare_text_secondary"
+                android:textColorLink="@color/foodshare_dark_green"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/textCustomerEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:autoLink="email"
+                android:linksClickable="true"
+                android:text="Email: Loading..."
+                android:textColor="@color/foodshare_text_secondary"
+                android:textColorLink="@color/foodshare_dark_green"
+                android:textSize="14sp" />
+        </LinearLayout>
+
         <TextView
             android:id="@+id/textOrderQuantity"
             android:layout_width="match_parent"

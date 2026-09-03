@@ -185,7 +185,10 @@ public class CheckoutActivity extends AppCompatActivity {
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         firestore.runTransaction(transaction -> {
+            com.google.firebase.firestore.DocumentReference userRef =
+                    firestore.collection("users").document(userId);
             com.google.firebase.firestore.DocumentReference listingRef = firestore.collection("listings").document(listingId);
+            com.google.firebase.firestore.DocumentSnapshot consumerProfile = transaction.get(userRef);
             com.google.firebase.firestore.DocumentSnapshot listing = transaction.get(listingRef);
 
             if (!listing.exists()) {
@@ -220,6 +223,9 @@ public class CheckoutActivity extends AppCompatActivity {
 
             Map<String, Object> order = new HashMap<>();
             order.put("userId", userId);
+            order.put("consumerName", consumerProfile.getString("name"));
+            order.put("consumerPhone", consumerProfile.getString("phone"));
+            order.put("consumerEmail", consumerProfile.getString("email"));
             order.put("vendorId", vendorId);
             order.put("listingId", listingId);
             order.put("itemName", savedItemName);
