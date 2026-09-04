@@ -75,7 +75,7 @@ public class VendorOrderAdapter extends RecyclerView.Adapter<VendorOrderAdapter.
         holder.textItemName.setText(itemName == null || itemName.isEmpty() ? "Surprise Box" : itemName);
         holder.textQuantity.setText("Quantity: " + quantity);
         holder.textTotal.setText(String.format(Locale.getDefault(), "Total: RM %.2f", total));
-        holder.textPickupTime.setText("Pickup: " + (pickupTime == null || pickupTime.isEmpty() ? "Not available" : pickupTime));
+        holder.textPickupTime.setText("Pickup: " + formatPickupTime(pickupTime));
         holder.textStatus.setText(formatStatus(status));
 
         String paymentText = payment == null || payment.isEmpty() ? "Unknown" : payment;
@@ -110,6 +110,16 @@ public class VendorOrderAdapter extends RecyclerView.Adapter<VendorOrderAdapter.
         }
 
         setupActionButton(holder.buttonOrderAction, order, status);
+    }
+
+    private String formatPickupTime(String pickupTime) {
+        if (pickupTime == null || pickupTime.trim().isEmpty()) {
+            return "Not available";
+        }
+
+        return pickupTime
+                .replaceAll("(?i)\\bam\\b", "AM")
+                .replaceAll("(?i)\\bpm\\b", "PM");
     }
 
     private void bindCustomerContact(OrderViewHolder holder, DocumentSnapshot order) {
